@@ -7,6 +7,7 @@ import model.annotations.MapToDatabase;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@MapToDatabase(columnName = "video_game")
 public class VideoGame {
     @Id
     private Long id;
