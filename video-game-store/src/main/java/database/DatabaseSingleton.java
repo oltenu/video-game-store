@@ -26,7 +26,7 @@ public class DatabaseSingleton {
             if (productionInstance == null) {
                 synchronized (DatabaseSingleton.class) {
                     if (productionInstance == null) {
-                        productionInstance = createConnection(TEST);
+                        productionInstance = createConnection(PRODUCTION);
                     }
                 }
             }
@@ -36,7 +36,7 @@ public class DatabaseSingleton {
             if (testInstance == null) {
                 synchronized (DatabaseSingleton.class) {
                     if (testInstance == null) {
-                        testInstance = createConnection(PRODUCTION);
+                        testInstance = createConnection(TEST);
                     }
                 }
             }
