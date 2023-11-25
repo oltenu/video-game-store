@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,11 +115,12 @@ public class RightsRolesRepositoryMySQL implements RightsRolesRepository {
 
     @Override
     public Right findRightByTitle(String right) {
-        Statement statement;
         try {
-            statement = connection.createStatement();
-            String fetchRoleSql = "SELECT * FROM `" + RIGHT + "` WHERE `right`= ?";
-            ResultSet rightResultSet = statement.executeQuery(fetchRoleSql);
+            String query = "SELECT * FROM `" + RIGHT + "` WHERE `right` = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, right);
+            ResultSet rightResultSet = preparedStatement.executeQuery();
+
             rightResultSet.next();
             Long rightId = rightResultSet.getLong("id");
             String rightTitle = rightResultSet.getString("right");
