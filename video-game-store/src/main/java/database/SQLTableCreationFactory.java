@@ -78,7 +78,7 @@ public class SQLTableCreationFactory {
                     "    REFERENCES role (id)" +
                     "    ON DELETE CASCADE" +
                     "    ON UPDATE CASCADE);";
-            case ORDER -> "  CREATE TABLE IF NOT EXISTS order (" +
+            case ORDER -> " CREATE TABLE IF NOT EXISTS `order` (" +
                     "  id INT NOT NULL AUTO_INCREMENT," +
                     "  customer_id INT NOT NULL," +
                     "  employee_id INT NOT NULL," +
