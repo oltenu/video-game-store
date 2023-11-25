@@ -10,7 +10,6 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.*;
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,9 +105,9 @@ public class AbstractRepository<T> {
                 field.setAccessible(true);
 
                 if (!field.isAnnotationPresent(Id.class)) {
-                    if(field.isAnnotationPresent(MapToDatabase.class)){
+                    if (field.isAnnotationPresent(MapToDatabase.class)) {
                         names.append(field.getAnnotation(MapToDatabase.class).columnName()).append(",");
-                    }else{
+                    } else {
                         names.append(field.getName()).append(",");
                     }
 
