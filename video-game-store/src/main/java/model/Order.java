@@ -12,6 +12,7 @@ public class Order {
     private Long customerId;
     @MapToDatabase(columnName = "employee_id")
     private Long employeeId;
+    @MapToDatabase(columnName = "game_id")
     private Long gameId;
     private Integer amount;
     @MapToDatabase(columnName = "total_price")
