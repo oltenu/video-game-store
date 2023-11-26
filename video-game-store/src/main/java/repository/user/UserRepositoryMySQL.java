@@ -24,9 +24,10 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
     public boolean save(User user, String salt) {
         try {
             PreparedStatement insertUserStatement = connection
-                    .prepareStatement("INSERT INTO user values (null, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                    .prepareStatement("INSERT INTO user values (null, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             insertUserStatement.setString(1, user.getUsername());
             insertUserStatement.setString(2, user.getPassword());
+            insertUserStatement.setInt(3, 100);
             insertUserStatement.executeUpdate();
 
             ResultSet rs = insertUserStatement.getGeneratedKeys();
@@ -57,6 +58,7 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
             preparedStatement.setString(1, username);
 
             ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
             Long userId = resultSet.getLong("id");
             String salt = getUserSalt(userId);
             String saltedPassword = password + salt;

@@ -22,7 +22,7 @@ public class LoginView {
 
     private TextField userTextField;
     private PasswordField passwordField;
-    private Button signInButton;
+    private Button registerButton;
     private Button logInButton;
     private Text actionTarget;
 
@@ -68,10 +68,10 @@ public class LoginView {
         passwordField = new PasswordField();
         gridPane.add(passwordField, 1, 2);
 
-        signInButton = new Button("Sign In");
+        registerButton = new Button("Register");
         HBox signInButtonHBox = new HBox(10);
         signInButtonHBox.setAlignment(Pos.BOTTOM_RIGHT);
-        signInButtonHBox.getChildren().add(signInButton);
+        signInButtonHBox.getChildren().add(registerButton);
         gridPane.add(signInButtonHBox, 1, 4);
 
         logInButton = new Button("Log In");
@@ -102,6 +102,6 @@ public class LoginView {
     }
 
     public void addRegisterButtonListener(EventHandler<ActionEvent> signInButtonListener) {
-        signInButton.setOnAction(signInButtonListener);
+        registerButton.setOnAction(signInButtonListener);
     }
 }

@@ -60,9 +60,8 @@ public class RightsRolesRepositoryMySQL implements RightsRolesRepository {
             roleResultSet.next();
             Long roleId = roleResultSet.getLong("id");
             String roleTitle = roleResultSet.getString("role");
-            List<Right> rights = findRightsByRole(roleId);
 
-            return new Role(roleId, roleTitle, rights);
+            return new Role(roleId, roleTitle, null);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -76,12 +75,12 @@ public class RightsRolesRepositoryMySQL implements RightsRolesRepository {
         try {
             String query = "Select * from " + ROLE + " where `id`= ?";
             preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setLong(1, roleId);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             String roleTitle = resultSet.getString("role");
-            List<Right> rights = findRightsByRole(roleId);
 
-            return new Role(roleId, roleTitle, rights);
+            return new Role(roleId, roleTitle, null);
         } catch (SQLException e) {
             e.printStackTrace();
         }

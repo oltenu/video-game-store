@@ -40,6 +40,7 @@ public class OrderServiceImplementation implements OrderService {
                 .filter(u -> u.getRoles()
                         .stream()
                         .anyMatch(role -> EMPLOYEE.equals(role.getRole()))).findFirst().orElse(null);
+        buyGameNotification.setResult(Boolean.TRUE);
 
         if (user == null) {
             buyGameNotification.addError("Customer with %d id not found!".formatted(customerId));

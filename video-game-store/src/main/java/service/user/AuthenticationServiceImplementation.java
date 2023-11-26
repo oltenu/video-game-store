@@ -43,6 +43,7 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
 
         boolean userValid = userValidator.validate();
         Notification<Boolean> userRegisterNotification = new Notification<>();
+        userRegisterNotification.setResult(Boolean.TRUE);
 
         if (!validateEmailUniqueness(username)) {
             userRegisterNotification.addError("Email is already taken!");
