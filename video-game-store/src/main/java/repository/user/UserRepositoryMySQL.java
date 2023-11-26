@@ -6,10 +6,7 @@ import model.validator.Notification;
 import repository.AbstractRepository;
 import repository.security.RightsRolesRepository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import static database.Constants.Tables.USER;
 
@@ -24,6 +21,30 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
         this.rightsRolesRepository = rightsRolesRepository;
     }
 
+    public boolean save(User user, String salt) {
+        try {
+            PreparedStatement insertUserStatement = connection
+                    .prepareStatement("INSERT INTO user values (null, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            insertUserStatement.setString(1, user.getUsername());
+            insertUserStatement.setString(2, user.getPassword());
+            insertUserStatement.executeUpdate();
+
+            ResultSet rs = insertUserStatement.getGeneratedKeys();
+            rs.next();
+            long userId = rs.getLong(1);
+            user.setId(userId);
+
+            addUserSalt(user.getId(), salt);
+            rightsRolesRepository.addRolesToUser(user, user.getRoles());
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
     @Override
     public Notification<User> findByUsernameAndPassword(String username, String password) {
         Notification<User> findByUsernameAndPasswordNotification = new Notification<>();
@@ -31,12 +52,22 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
             PreparedStatement preparedStatement;
 
             String query =
-                    "Select * from `" + USER + "` where `username`= ? and `password`= ?";
+                    "Select * from `" + USER + "` where `username`= ?";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Long userId = resultSet.getLong("id");
+            String salt = getUserSalt(userId);
+            String saltedPassword = password + salt;
+
+            String query2 = "Select * from `" + USER + "` where `username`= ? and `password` = ?";
+            PreparedStatement second = connection.prepareStatement(query2);
+            second.setString(1, username);
+            second.setString(2, saltedPassword);
 
             ResultSet userResultSet = preparedStatement.executeQuery();
+
             if (userResultSet.next()) {
                 User user = new UserBuilder()
                         .setUsername(userResultSet.getString("username"))

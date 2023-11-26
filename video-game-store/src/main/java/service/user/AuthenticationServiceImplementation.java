@@ -10,6 +10,8 @@ import repository.user.UserRepository;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Collections;
 
 import static database.Constants.Roles.CUSTOMER;
@@ -18,6 +20,7 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
 
     private final UserRepository userRepository;
     private final RightsRolesRepository rightsRolesRepository;
+    private static final int SALT_LENGTH = 16;
 
     public AuthenticationServiceImplementation(UserRepository userRepository, RightsRolesRepository rightsRolesRepository) {
         this.userRepository = userRepository;
@@ -50,8 +53,10 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
             userValidator.getErrors().forEach(userRegisterNotification::addError);
             userRegisterNotification.setResult(Boolean.FALSE);
         } else {
-            user.setPassword(hashPassword(password));
-            userRegisterNotification.setResult(userRepository.save(user));
+            String salt = generateSalt();
+            user.setPassword(hashPassword(password + salt));
+
+            userRegisterNotification.setResult(userRepository.save(user, salt));
         }
 
         return userRegisterNotification;
@@ -71,6 +76,13 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
         final boolean response = userRepository.existsByUsername(email);
 
         return !response;
+    }
+
+    private String generateSalt() {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] salt = new byte[SALT_LENGTH];
+        secureRandom.nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
     }
 
     private String hashPassword(String password) {
