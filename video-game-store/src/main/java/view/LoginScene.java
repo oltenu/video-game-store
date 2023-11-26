@@ -12,13 +12,13 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
-public class LoginView {
+public class LoginScene extends Scene{
 
     private TextField userTextField;
     private PasswordField passwordField;
@@ -26,20 +26,13 @@ public class LoginView {
     private Button logInButton;
     private Text actionTarget;
 
-    public LoginView(Stage primaryStage) {
-        primaryStage.setTitle("Video Game Store");
-
+    public LoginScene() {
+        super(new StackPane());
         GridPane gridPane = new GridPane();
         initializeGridPane(gridPane);
-
-        Scene scene = new Scene(gridPane, 720, 480);
-        primaryStage.setScene(scene);
-
+        setRoot(gridPane);
         initializeSceneTitle(gridPane);
-
         initializeFields(gridPane);
-
-        primaryStage.show();
     }
 
     private void initializeGridPane(GridPane gridPane) {

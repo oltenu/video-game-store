@@ -17,20 +17,29 @@ import service.order.OrderService;
 import service.order.OrderServiceImplementation;
 import service.user.AuthenticationService;
 import service.user.AuthenticationServiceImplementation;
-import view.LoginView;
+import view.*;
 
 import java.sql.Connection;
 
 public class ComponentFactory {
-    private final LoginView loginView;
+    private final Window window;
+    private final LoginScene loginScene;
+    private final CustomerScene customerScene;
+    private final EmployeeScene employeeScene;
+    private final AdminScene adminScene;
+
     private final LoginController loginController;
+
+
     private final AuthenticationService authenticationService;
     private final VideoGameService videoGameService;
     private final OrderService orderService;
+
     private final UserRepository userRepository;
     private final RightsRolesRepository rightsRolesRepository;
     private final VideoGameRepository videoGameRepository;
     private final OrderRepository orderRepository;
+
     private static ComponentFactory instance;
 
     public static ComponentFactory getInstance(Boolean componentsForTests, Stage stage) {
@@ -42,6 +51,12 @@ public class ComponentFactory {
     }
 
     public ComponentFactory(Boolean componentsForTests, Stage stage) {
+        loginScene = new LoginScene();
+        customerScene = new CustomerScene();
+        employeeScene = new EmployeeScene();
+        adminScene = new AdminScene();
+        window = new Window(stage, loginScene, customerScene, employeeScene, adminScene);
+
         Connection connection = DatabaseSingleton.getConnection(componentsForTests);
         this.rightsRolesRepository = new RightsRolesRepositoryMySQL(connection);
         this.userRepository = new UserRepositoryMySQL(connection, rightsRolesRepository);
@@ -52,12 +67,11 @@ public class ComponentFactory {
         this.authenticationService = new AuthenticationServiceImplementation(userRepository, rightsRolesRepository);
         this.orderService = new OrderServiceImplementation(userRepository, videoGameRepository, orderRepository);
 
-        this.loginView = new LoginView(stage);
-        this.loginController = new LoginController(loginView, authenticationService);
+        this.loginController = new LoginController(loginScene, authenticationService, window);
     }
 
-    public LoginView getLoginView() {
-        return loginView;
+    public LoginScene getLoginView() {
+        return loginScene;
     }
 
     public LoginController getLoginController() {
