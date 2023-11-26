@@ -48,6 +48,7 @@ public class Bootstrap {
                     "DROP TABLE `right`;",
                     "DROP TABLE `user_role`;",
                     "DROP TABLE `order`;",
+                    "DROP TABLE `salt`;",
                     "DROP TABLE `video_game`;",
                     "DROP TABLE `role`;",
                     "DROP TABLE `user`;"

@@ -1,12 +1,6 @@
 package database;
 
-import static database.Constants.Tables.VIDEOGAME;
-import static database.Constants.Tables.RIGHT;
-import static database.Constants.Tables.ROLE;
-import static database.Constants.Tables.ROLE_RIGHT;
-import static database.Constants.Tables.USER;
-import static database.Constants.Tables.USER_ROLE;
-import static database.Constants.Tables.ORDER;
+import static database.Constants.Tables.*;
 
 public class SQLTableCreationFactory {
 
@@ -100,6 +94,17 @@ public class SQLTableCreationFactory {
                     "  CONSTRAINT game_id" +
                     "    FOREIGN KEY (game_id)" +
                     "    REFERENCES video_game (id)" +
+                    "    ON DELETE CASCADE" +
+                    "    ON UPDATE CASCADE);";
+            case SALT -> "CREATE TABLE IF NOT EXISTS `salt` (" +
+                    "  id INT NOT NULL AUTO_INCREMENT," +
+                    "  user_id INT NOT NULL," +
+                    "  user_salt VARCHAR(64) NOT NULL," +
+                    "  PRIMARY KEY (id)," +
+                    "  UNIQUE INDEX id_UNIQUE (id ASC)," +
+                    "  CONSTRAINT user_id" +
+                    "    FOREIGN KEY (user_id)" +
+                    "    REFERENCES user (id)" +
                     "    ON DELETE CASCADE" +
                     "    ON UPDATE CASCADE);";
             default -> "";
