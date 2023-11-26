@@ -22,4 +22,8 @@ public interface UserRepository {
     Notification<User> findByUsernameAndPassword(String username, String password);
 
     boolean existsByUsername(String username);
+
+    void addUserSalt(Long userId, String salt);
+
+    String getUserSalt(Long userId);
 }
