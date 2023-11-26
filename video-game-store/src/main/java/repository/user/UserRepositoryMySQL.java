@@ -73,4 +73,37 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
             return false;
         }
     }
+
+    @Override
+    public void addUserSalt(Long userId, String salt) {
+        String query = "INSERT IGNORE INTO `salt` VALUES (null, ?, ?)";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setString(2, salt);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String getUserSalt(Long userId) {
+        String query = "SELECT * FROM `salt` WHERE `user_id` = ?";
+        String salt = "";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setLong(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            salt = resultSet.getString("user_salt");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return salt;
+    }
 }
