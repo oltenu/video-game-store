@@ -22,6 +22,8 @@ import java.util.List;
 public class CustomerScene extends Scene {
     protected MenuBar menuBar;
     protected Menu homeMenu;
+    protected MenuItem homeItem;
+    protected MenuItem logOutItem;
     protected Menu customerMenu;
     protected MenuItem buyGameItem;
     protected MenuItem customerOrdersItem;
@@ -63,14 +65,15 @@ public class CustomerScene extends Scene {
         menuBar = new MenuBar();
 
         homeMenu = new Menu("Home");
-        MenuItem homeItem = new MenuItem("Home page");
+        homeItem = new MenuItem("Home page");
         homeItem.setOnAction(a -> {
             clearPane();
 
             mainPane.setTop(menuBar);
             mainPane.setCenter(userPane);
         });
-        homeMenu.getItems().add(homeItem);
+        logOutItem = new MenuItem("LogOut");
+        homeMenu.getItems().addAll(homeItem, logOutItem);
 
         customerMenu = new Menu("Customer");
         buyGameItem = new MenuItem("Buy Game...");
@@ -223,8 +226,12 @@ public class CustomerScene extends Scene {
         buyGameItem.setOnAction(buyMenuButtonListener);
     }
 
-    public void addCustomerOrdersItem(EventHandler<ActionEvent> customerOrdersMenuListener) {
+    public void addCustomerOrdersItemListener(EventHandler<ActionEvent> customerOrdersMenuListener) {
         customerOrdersItem.setOnAction(customerOrdersMenuListener);
+    }
+
+    public void addLogOutItemListener(EventHandler<ActionEvent> logOutMenuListener) {
+        logOutItem.setOnAction(logOutMenuListener);
     }
 
     public void addBuyButtonListener(EventHandler<ActionEvent> buyButtonListener) {
