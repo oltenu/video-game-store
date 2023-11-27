@@ -20,7 +20,7 @@ public class VideoGameServiceImplementation implements VideoGameService {
     @Override
     public VideoGame findById(Long id) {
         return videoGameRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Book with id: %d not found".formatted(id)));
+                () -> new IllegalArgumentException("Game with id: %d not found".formatted(id)));
     }
 
     @Override

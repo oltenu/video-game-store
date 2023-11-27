@@ -13,7 +13,7 @@ public interface UserRepository {
 
     boolean save(User user);
 
-    public boolean save(User user, String salt);
+    boolean save(User user, String salt);
 
     void deleteById(Long id);
 
