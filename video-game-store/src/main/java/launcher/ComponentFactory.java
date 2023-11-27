@@ -3,6 +3,7 @@ package launcher;
 import controller.LoginController;
 import database.DatabaseSingleton;
 import javafx.stage.Stage;
+import model.User;
 import repository.game.VideoGameRepository;
 import repository.game.VideoGameRepositoryMySQL;
 import repository.order.OrderRepository;
@@ -40,6 +41,8 @@ public class ComponentFactory {
     private final VideoGameRepository videoGameRepository;
     private final OrderRepository orderRepository;
 
+    private User activeUser;
+
     private static ComponentFactory instance;
 
     public static ComponentFactory getInstance(Boolean componentsForTests, Stage stage) {
@@ -51,6 +54,8 @@ public class ComponentFactory {
     }
 
     public ComponentFactory(Boolean componentsForTests, Stage stage) {
+        activeUser = null;
+
         loginScene = new LoginScene();
         customerScene = new CustomerScene();
         employeeScene = new EmployeeScene();
@@ -67,7 +72,7 @@ public class ComponentFactory {
         this.authenticationService = new AuthenticationServiceImplementation(userRepository, rightsRolesRepository);
         this.orderService = new OrderServiceImplementation(userRepository, videoGameRepository, orderRepository);
 
-        this.loginController = new LoginController(loginScene, authenticationService, window);
+        this.loginController = new LoginController(loginScene, authenticationService, window, activeUser);
     }
 
     public LoginScene getLoginView() {

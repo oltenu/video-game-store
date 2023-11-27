@@ -69,7 +69,9 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
     }
 
     @Override
-    public boolean logout(User user) {
+    public boolean logout(User activeUser) {
+        activeUser = null;
+
         return true;
     }
 

@@ -72,6 +72,7 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
 
             if (userResultSet.next()) {
                 User user = new UserBuilder()
+                        .setId(userResultSet.getLong("id"))
                         .setUsername(userResultSet.getString("username"))
                         .setPassword(userResultSet.getString("password"))
                         .setMoney(userResultSet.getDouble("money"))
