@@ -17,4 +17,8 @@ public interface OrderRepository {
     boolean update(Order order);
 
     void removeAll();
+
+    List<Order> findAllCustomerOrders(Long customerId);
+
+    List<Order> findAllEmployeeSales(Long employeeId);
 }
