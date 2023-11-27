@@ -18,14 +18,13 @@ public class LoginController {
     private final LoginScene loginScene;
     private final AuthenticationService authenticationService;
     private final Window window;
-    private User activeUser;
 
 
-    public LoginController(LoginScene loginScene, AuthenticationService authenticationService, Window window, User activeUser) {
+    public LoginController(LoginScene loginScene, AuthenticationService authenticationService,
+                           Window window) {
         this.window = window;
         this.loginScene = loginScene;
         this.authenticationService = authenticationService;
-        this.activeUser = activeUser;
 
         this.loginScene.addLoginButtonListener(new LoginButtonListener());
         this.loginScene.addRegisterButtonListener(new RegisterButtonListener());
@@ -45,7 +44,7 @@ public class LoginController {
             } else {
                 loginScene.setActionTargetText("LogIn Successful!");
                 User user = loginNotification.getResult();
-                activeUser = user;
+                window.setActiveUser(user);
                 List<Role> roles = user.getRoles();
                 List<String> rolesTitle = roles.stream().map(Role::getRole).toList();
 

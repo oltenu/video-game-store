@@ -1,47 +1,60 @@
 package view;
 
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import model.User;
 
-import javax.swing.*;
 import java.util.Objects;
 
 public class Window {
     private final Stage primaryStage;
-    private final Scene loginScene;
-    private final Scene customerScene;
-    private final Scene employeeScene;
-    private final Scene adminScene;
+    private final LoginScene loginScene;
+    private final CustomerScene customerScene;
+    private final EmployeeScene employeeScene;
+    private final AdminScene adminScene;
+    private User activeUser;
 
-    public Window(Stage primaryStage, Scene loginScene, Scene customerScene, Scene employeeScene, Scene adminScene){
+    public Window(Stage primaryStage, LoginScene loginScene, CustomerScene customerScene,
+                  EmployeeScene employeeScene, AdminScene adminScene) {
         this.primaryStage = primaryStage;
         this.loginScene = loginScene;
         this.customerScene = customerScene;
         this.employeeScene = employeeScene;
         this.adminScene = adminScene;
+        this.activeUser = null;
 
         initStage();
 
         primaryStage.show();
     }
 
-    private void initStage(){
+    private void initStage() {
         primaryStage.setTitle("Video Game Store");
         primaryStage.setWidth(800);
         primaryStage.setHeight(600);
         primaryStage.setResizable(false);
         Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game_store.png")));
         primaryStage.getIcons().add(icon);
-        primaryStage.setScene(customerScene);
+        primaryStage.setScene(loginScene);
     }
 
-    public void setScene(int index){
+    public void setScene(int index) {
         switch (index) {
-            case 0 -> primaryStage.setScene(loginScene);
+            case 0 -> {
+                primaryStage.setScene(loginScene);
+                loginScene.refresh();
+            }
             case 1 -> primaryStage.setScene(customerScene);
             case 2 -> primaryStage.setScene(employeeScene);
             case 3 -> primaryStage.setScene(adminScene);
         }
+    }
+
+    public User getActiveUser() {
+        return activeUser;
+    }
+
+    public void setActiveUser(User activeUser) {
+        this.activeUser = activeUser;
     }
 }

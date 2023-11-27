@@ -18,7 +18,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-public class LoginScene extends Scene{
+public class LoginScene extends Scene {
 
     private TextField userTextField;
     private PasswordField passwordField;
@@ -76,6 +76,12 @@ public class LoginScene extends Scene{
         actionTarget = new Text();
         actionTarget.setFill(Color.FIREBRICK);
         gridPane.add(actionTarget, 1, 6);
+    }
+
+    public void refresh() {
+        userTextField.clear();
+        passwordField.clear();
+        actionTarget.setText("");
     }
 
     public String getUsername() {
