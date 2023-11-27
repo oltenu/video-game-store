@@ -49,7 +49,7 @@ public class CustomerScene extends Scene {
 
     public CustomerScene() {
         super(new StackPane());
-        initializeMenu();
+        initializeMenuCustomer();
         initializeGamePane();
         initializeUserData();
         initializeOrderTable();
@@ -57,11 +57,10 @@ public class CustomerScene extends Scene {
         mainPane = new BorderPane();
         mainPane.setTop(menuBar);
         mainPane.setCenter(new StackPane());
-
         setRoot(mainPane);
     }
 
-    private void initializeMenu() {
+    public void initializeMenuCustomer() {
         menuBar = new MenuBar();
 
         homeMenu = new Menu("Home");

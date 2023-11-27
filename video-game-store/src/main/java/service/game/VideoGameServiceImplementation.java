@@ -1,9 +1,11 @@
 package service.game;
 
 import model.VideoGame;
+import model.validator.Notification;
 import repository.game.VideoGameRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class VideoGameServiceImplementation implements VideoGameService {
     private final VideoGameRepository videoGameRepository;
@@ -24,8 +26,17 @@ public class VideoGameServiceImplementation implements VideoGameService {
     }
 
     @Override
-    public boolean save(VideoGame videoGame) {
-        return videoGameRepository.save(videoGame);
+    public Notification<Boolean> save(VideoGame videoGame) {
+        Notification<Boolean> saveNotification = new Notification<>();
+
+        if (videoGameRepository.save(videoGame)) {
+            saveNotification.setResult(Boolean.TRUE);
+        } else {
+            saveNotification.setResult(Boolean.FALSE);
+            saveNotification.addError("Something went wrong!");
+        }
+
+        return saveNotification;
     }
 
     @Override
@@ -34,8 +45,20 @@ public class VideoGameServiceImplementation implements VideoGameService {
     }
 
     @Override
-    public boolean update(VideoGame videoGame) {
-        return videoGameRepository.update(videoGame);
+    public Notification<Boolean> update(VideoGame videoGame) {
+        Notification<Boolean> resultNotification = new Notification<>();
+
+        Long id = videoGame.getId();
+        Optional<VideoGame> game = videoGameRepository.findById(id);
+
+        if (game.isPresent()) {
+            resultNotification.setResult(Boolean.TRUE);
+        } else {
+            resultNotification.setResult(Boolean.FALSE);
+            resultNotification.addError("Select an existing game to edit!");
+        }
+
+        return resultNotification;
     }
 
     @Override

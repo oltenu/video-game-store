@@ -8,10 +8,10 @@ public class AdminScene extends CustomerScene{
     protected MenuItem usersItem;
     protected MenuItem employeeReportItem;
     public AdminScene(){
-        initializeMenu();
+        initializeMenuCustomer();
     }
 
-    private void initializeMenu(){
+    public void initializeMenuAdmin(){
         adminMenu = new Menu("Admin");
 
         usersItem = new MenuItem("Users...");
