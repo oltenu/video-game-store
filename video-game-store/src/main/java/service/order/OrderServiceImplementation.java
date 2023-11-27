@@ -28,6 +28,37 @@ public class OrderServiceImplementation implements OrderService {
     }
 
     @Override
+    public List<Order> findAll() {
+        return orderRepository.findAll();
+    }
+
+    @Override
+    public Order findById(Long id) {
+        return orderRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Order with %d id not found!".formatted(id)));
+    }
+
+    @Override
+    public boolean save(Order order) {
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        orderRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean update(Order order) {
+        return orderRepository.update(order);
+    }
+
+    @Override
+    public void removeAll() {
+        orderRepository.removeAll();
+    }
+
+    @Override
     public Notification<Boolean> buyGame(Long customerId, Long gameId, Integer amount) {
         Notification<Boolean> buyGameNotification = new Notification<>();
 
@@ -64,17 +95,34 @@ public class OrderServiceImplementation implements OrderService {
             orderValidator.getErrors().forEach(buyGameNotification::addError);
             buyGameNotification.setResult(Boolean.FALSE);
         } else {
+            double totalPrice = amount * Objects.requireNonNull(game).getPrice();
+
             Order order = new OrderBuilder()
                     .setCustomerId(customerId)
                     .setEmployeeId(Objects.requireNonNull(employee).getId())
                     .setGameId(gameId)
                     .setAmount(amount)
-                    .setTotalPrice(amount * Objects.requireNonNull(game).getPrice())
+                    .setTotalPrice(totalPrice)
                     .build();
 
+            game.setAmount(game.getAmount() - amount);
+            Objects.requireNonNull(user).setMoney(user.getMoney() - totalPrice);
+
             buyGameNotification.setResult(orderRepository.save(order));
+            videoGameRepository.update(game);
+            userRepository.update(user);
         }
 
         return buyGameNotification;
+    }
+
+    @Override
+    public List<Order> findAllCustomerOrders(Long customerId) {
+        return orderRepository.findAllCustomerOrders(customerId);
+    }
+
+    @Override
+    public List<Order> findAllEmployeeSales(Long employeeId) {
+        return orderRepository.findAllEmployeeSales(employeeId);
     }
 }
