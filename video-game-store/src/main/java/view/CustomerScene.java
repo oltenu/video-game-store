@@ -56,7 +56,7 @@ public class CustomerScene extends Scene {
 
         mainPane = new BorderPane();
         mainPane.setTop(menuBar);
-        mainPane.setCenter(userPane);
+        mainPane.setCenter(new StackPane());
 
         setRoot(mainPane);
     }
@@ -66,12 +66,6 @@ public class CustomerScene extends Scene {
 
         homeMenu = new Menu("Home");
         homeItem = new MenuItem("Home page");
-        homeItem.setOnAction(a -> {
-            clearPane();
-
-            mainPane.setTop(menuBar);
-            mainPane.setCenter(userPane);
-        });
         logOutItem = new MenuItem("LogOut");
         homeMenu.getItems().addAll(homeItem, logOutItem);
 
@@ -187,19 +181,36 @@ public class CustomerScene extends Scene {
         buyPane.add(buyText, 0, 1);
     }
 
+    public void setUserData(String userName, String money, String role) {
+        userNameLabel.setText("Name: " + userName);
+        moneyLabel.setText("Money: " + money);
+        userRoleLabel.setText("Role: " + role);
+    }
+
+    public void refreshHomePane() {
+        clearPane();
+
+        mainPane.setTop(menuBar);
+        mainPane.setCenter(userPane);
+    }
+
     public void refreshGamePane(List<VideoGame> games) {
         clearPane();
 
         gamesTable.setItems(FXCollections.observableList(games));
+        mainPane.setTop(menuBar);
         mainPane.setCenter(gamesTable);
         mainPane.setBottom(buyPane);
     }
 
     public void refreshOrderPane(List<Order> orders) {
         clearPane();
-
         customerOrdersTable.setItems(FXCollections.observableList(orders));
+
+        mainPane.setTop(menuBar);
         mainPane.setCenter(customerOrdersTable);
+        buyGameIdTextField.clear();
+        buyAmountTextField.clear();
     }
 
     public void clearPane() {
@@ -211,10 +222,22 @@ public class CustomerScene extends Scene {
     }
 
     public Long getSelectedGameId() {
+        if (buyGameIdTextField.getText().isEmpty()) {
+            setBuyResult("No product selected!");
+
+            return 0L;
+        }
+
         return Long.valueOf(buyGameIdTextField.getText());
     }
 
     public Integer getAmount() {
+        if (buyAmountTextField.getText().isEmpty()) {
+            setBuyResult("No amount selected!");
+
+            return 0;
+        }
+
         return Integer.valueOf(buyAmountTextField.getText());
     }
 
@@ -224,6 +247,10 @@ public class CustomerScene extends Scene {
 
     public void addBuyMenuButtonListener(EventHandler<ActionEvent> buyMenuButtonListener) {
         buyGameItem.setOnAction(buyMenuButtonListener);
+    }
+
+    public void addHomeItemListener(EventHandler<ActionEvent> homeItemListener) {
+        homeItem.setOnAction(homeItemListener);
     }
 
     public void addCustomerOrdersItemListener(EventHandler<ActionEvent> customerOrdersMenuListener) {
@@ -236,11 +263,5 @@ public class CustomerScene extends Scene {
 
     public void addBuyButtonListener(EventHandler<ActionEvent> buyButtonListener) {
         buyButton.setOnAction(buyButtonListener);
-    }
-
-    public void setUserData(String userName, String money, String role) {
-        userNameLabel.setText("Name: " + userName);
-        moneyLabel.setText("Money: " + money);
-        userRoleLabel.setText("Role: " + role);
     }
 }
