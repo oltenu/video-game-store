@@ -10,11 +10,11 @@ public interface VideoGameService {
 
     VideoGame findById(Long id);
 
-    boolean save(VideoGame videoGame);
+    Notification<Boolean> save(VideoGame videoGame);
 
     void deleteById(Long id);
 
-    boolean update(VideoGame videoGame);
+    Notification<Boolean> update(VideoGame videoGame);
 
     void removeAll();
 
