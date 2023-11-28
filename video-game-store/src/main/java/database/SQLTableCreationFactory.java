@@ -7,7 +7,7 @@ public class SQLTableCreationFactory {
     public String getCreateSQLForTable(String table) {
         return switch (table) {
             case VIDEOGAME -> "CREATE TABLE IF NOT EXISTS video_game (" +
-                    "  id INT NOT NULL AUTO_INCREMENT," +
+                    "  id BIGINT(19) NOT NULL AUTO_INCREMENT," +
                     "  name VARCHAR(500) NOT NULL," +
                     "  description VARCHAR(500) NOT NULL," +
                     "  amount INT NOT NULL," +
@@ -76,7 +76,7 @@ public class SQLTableCreationFactory {
                     "  id INT NOT NULL AUTO_INCREMENT," +
                     "  customer_id INT NOT NULL," +
                     "  employee_id INT NOT NULL," +
-                    "  game_id INT NOT NULL," +
+                    "  game_id BIGINT(19) NOT NULL," +
                     "  amount INT NOT NULL," +
                     "  total_price DOUBLE(10, 2) NOT NULL," +
                     "  PRIMARY KEY (id)," +

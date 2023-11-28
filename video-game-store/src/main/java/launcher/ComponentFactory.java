@@ -1,6 +1,8 @@
 package launcher;
 
+import controller.AdminController;
 import controller.CustomerController;
+import controller.EmployeeController;
 import controller.LoginController;
 import database.DatabaseSingleton;
 import javafx.stage.Stage;
@@ -18,6 +20,8 @@ import service.order.OrderService;
 import service.order.OrderServiceImplementation;
 import service.user.AuthenticationService;
 import service.user.AuthenticationServiceImplementation;
+import service.user.UserService;
+import service.user.UserServiceImplementation;
 import view.*;
 
 import java.sql.Connection;
@@ -31,11 +35,14 @@ public class ComponentFactory {
 
     private final LoginController loginController;
     private final CustomerController customerController;
+    private final EmployeeController employeeController;
+    private final AdminController adminController;
 
 
     private final AuthenticationService authenticationService;
     private final VideoGameService videoGameService;
     private final OrderService orderService;
+    private final UserService userService;
 
     private final UserRepository userRepository;
     private final RightsRolesRepository rightsRolesRepository;
@@ -67,9 +74,14 @@ public class ComponentFactory {
         this.videoGameService = new VideoGameServiceImplementation(videoGameRepository);
         this.authenticationService = new AuthenticationServiceImplementation(userRepository, rightsRolesRepository);
         this.orderService = new OrderServiceImplementation(userRepository, videoGameRepository, orderRepository);
+        this.userService = new UserServiceImplementation(userRepository, authenticationService);
 
         this.loginController = new LoginController(loginScene, authenticationService, window);
         this.customerController = new CustomerController(window, customerScene, authenticationService,
                 videoGameService, orderService);
+        this.employeeController = new EmployeeController(window, employeeScene, authenticationService, videoGameService,
+                orderService);
+        this.adminController = new AdminController(window, adminScene, videoGameService, orderService, userService,
+                authenticationService);
     }
 }

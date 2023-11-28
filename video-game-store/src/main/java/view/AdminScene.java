@@ -2,11 +2,15 @@ package view;
 
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableView;
+import model.User;
 
 public class AdminScene extends CustomerScene{
     protected Menu adminMenu;
     protected MenuItem usersItem;
     protected MenuItem employeeReportItem;
+
+    private TableView<User> usersTable;
     public AdminScene(){
         initializeMenuCustomer();
     }
@@ -20,4 +24,6 @@ public class AdminScene extends CustomerScene{
         adminMenu.getItems().addAll(usersItem, employeeReportItem);
         menuBar.getMenus().add(adminMenu);
     }
+
+
 }

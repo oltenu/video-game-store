@@ -253,9 +253,14 @@ public class AbstractRepository<T> {
                 T instance = constructor.newInstance();
 
                 for (Field field : type.getDeclaredFields()) {
-                    String fieldName = field.getName();
+                    String fieldName;
+                    if (field.isAnnotationPresent(MapToDatabase.class)) {
+                        fieldName = field.getAnnotation(MapToDatabase.class).columnName();
+                    } else {
+                        fieldName = field.getName();
+                    }
                     Object value = resultSet.getObject(fieldName);
-                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor(fieldName, type);
+                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor(field.getName(), type);
                     Method setMethod = propertyDescriptor.getWriteMethod();
                     if (field.isAnnotationPresent(DateType.class)) {
                         setMethod.invoke(instance, ((LocalDateTime) value).toLocalDate());
