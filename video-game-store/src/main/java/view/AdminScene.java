@@ -1,8 +1,6 @@
 package view;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -83,6 +81,7 @@ public class AdminScene extends EmployeeScene {
         moneyField.setMaxWidth(60);
         Label moneyLabel = new Label("Money:");
         rolesChoice = new ChoiceBox<>();
+        rolesChoice.setValue("customer");
         Label rolesLabel = new Label("Role:");
         fieldsBox.getChildren().addAll(new HBox(usernameLabel, usernameField),
                 new HBox(passwordLabel, passwordField), new HBox(moneyLabel, moneyField), new HBox(rolesLabel, rolesChoice));
@@ -130,15 +129,14 @@ public class AdminScene extends EmployeeScene {
         roleColumn.setMinWidth(130);
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("roles"));
 
-        usersTable.getColumns().addAll(usernameColumn, moneyColumn, roleColumn);
+        usersTable.getColumns().addAll(idColumn, usernameColumn, moneyColumn, roleColumn);
         usersTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        usersTable.getSelectionModel().getSelectedItems().addListener((ListChangeListener<User>) selected -> {
-            selected.next();
-            ObservableList<User> selectedUserList = (ObservableList<User>) selected.getList();
-            User selectedUser = selectedUserList.get(0);
-            userId = selectedUser.getId();
-            usernameField.setText(selectedUser.getUsername());
-            moneyField.setText(String.valueOf(selectedUser.getMoney()));
+        usersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                userId = newValue.getId();
+                usernameField.setText(newValue.getUsername());
+                moneyField.setText(String.valueOf(newValue.getMoney()));
+            }
         });
     }
 
@@ -148,6 +146,8 @@ public class AdminScene extends EmployeeScene {
         mainPane.setTop(menuBar);
         mainPane.setCenter(customerOrdersTable);
         mainPane.setBottom(employeesReportPane);
+
+        employees.forEach(employee -> employeesChoice.getItems().add(employee));
     }
 
     public void refreshCrudUsersPanel(List<User> users, List<String> roles) {
@@ -185,7 +185,8 @@ public class AdminScene extends EmployeeScene {
     public String getSelectedRole() {
         return rolesChoice.getValue();
     }
-    public Long getUserId(){
+
+    public Long getUserId() {
         return userId;
     }
 

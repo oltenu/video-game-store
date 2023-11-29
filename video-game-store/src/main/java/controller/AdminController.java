@@ -79,9 +79,9 @@ public class AdminController extends EmployeeController {
 
             Notification<Boolean> registerNotification = authenticationService.register(username, password);
 
-            if(registerNotification.hasErrors()){
+            if (registerNotification.hasErrors()) {
                 adminScene.setUsersText(registerNotification.getFormattedErrors());
-            }else{
+            } else {
                 adminScene.setUsersText("Added new user!");
             }
 
@@ -99,7 +99,7 @@ public class AdminController extends EmployeeController {
             Double money = Double.valueOf(adminScene.getMoneyField());
             String role = adminScene.getSelectedRole();
             List<Role> roles = new ArrayList<>();
-            roles.add(new Role(0L, role, null));
+            roles.add(userService.findRoleByTitle(role));
 
             User user = new UserBuilder()
                     .setId(id)
@@ -124,6 +124,7 @@ public class AdminController extends EmployeeController {
             userService.deleteById(id);
 
             adminScene.setUsersText("User deleted!");
+            adminScene.refreshCrudUsersPanel(userService.findAll(), Arrays.asList(ROLES));
         }
     }
 

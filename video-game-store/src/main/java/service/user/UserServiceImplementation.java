@@ -1,5 +1,6 @@
 package service.user;
 
+import model.Role;
 import model.User;
 import model.validator.Notification;
 import repository.security.RightsRolesRepository;
@@ -25,9 +26,7 @@ public class UserServiceImplementation implements UserService {
     public List<User> findAll() {
         List<User> users = userRepository.findAll();
 
-        users.forEach(user -> {
-            user.setRoles(rightsRolesRepository.findRolesForUser(user.getId()));
-        });
+        users.forEach(user -> user.setRoles(rightsRolesRepository.findRolesForUser(user.getId())));
 
         return users;
     }
@@ -70,5 +69,10 @@ public class UserServiceImplementation implements UserService {
     @Override
     public void removeAll() {
         userRepository.removeAll();
+    }
+
+    @Override
+    public Role findRoleByTitle(String role) {
+        return rightsRolesRepository.findRoleByTitle(role);
     }
 }

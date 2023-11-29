@@ -1,5 +1,6 @@
 package service.user;
 
+import model.Role;
 import model.User;
 import model.validator.Notification;
 
@@ -19,4 +20,6 @@ public interface UserService {
     void removeAll();
 
     List<User> findByRole(String role);
+
+    Role findRoleByTitle(String role);
 }

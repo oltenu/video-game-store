@@ -24,4 +24,6 @@ public interface RightsRolesRepository {
     void addRoleRight(Long roleId, Long rightId);
 
     List<Long> findUsersWithRole(Long roleId);
+
+    void updateRolesToUser(User user, List<Role> roles);
 }

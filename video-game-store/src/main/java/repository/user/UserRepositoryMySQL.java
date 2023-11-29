@@ -57,8 +57,9 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setDouble(3, user.getMoney());
             preparedStatement.setLong(4, user.getId());
+            preparedStatement.executeUpdate();
 
-            rightsRolesRepository.addRolesToUser(user, user.getRoles());
+            rightsRolesRepository.updateRolesToUser(user, user.getRoles());
         }catch (SQLException e){
             e.printStackTrace();
 

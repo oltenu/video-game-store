@@ -1,8 +1,6 @@
 package view;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -118,12 +116,11 @@ public class CustomerScene extends Scene {
         gamesTable.getColumns().addAll(idColumn, nameColumn, descriptionColumn,
                 releasedDateColumn, amountColumn, priceColumn);
         gamesTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        gamesTable.getSelectionModel().getSelectedItems().addListener((ListChangeListener<VideoGame>) selected -> {
-            selected.next();
-            ObservableList<VideoGame> selectedGameList = (ObservableList<VideoGame>) selected.getList();
-            VideoGame selectedGame = selectedGameList.get(0);
-            buyGameIdTextField.setText(String.valueOf(selectedGame.getId()));
-            buyGameNameTextField.setText(selectedGame.getName());
+        gamesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                buyGameIdTextField.setText(String.valueOf(newValue.getId()));
+                buyGameNameTextField.setText(newValue.getName());
+            }
         });
     }
 
