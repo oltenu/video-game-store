@@ -46,6 +46,28 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
 
     }
 
+    public boolean update(User user){
+        String query = "UPDATE `user` " +
+                " SET username = ?, password = ?, money = ? " +
+                " WHERE id = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, user.getUsername());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setDouble(3, user.getMoney());
+            preparedStatement.setLong(4, user.getId());
+
+            rightsRolesRepository.addRolesToUser(user, user.getRoles());
+        }catch (SQLException e){
+            e.printStackTrace();
+
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
     public Notification<User> findByUsernameAndPassword(String username, String password) {
         Notification<User> findByUsernameAndPasswordNotification = new Notification<>();

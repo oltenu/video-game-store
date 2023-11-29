@@ -146,6 +146,26 @@ public class RightsRolesRepositoryMySQL implements RightsRolesRepository {
     }
 
     @Override
+    public List<Long> findUsersWithRole(Long roleId){
+        List<Long> usersId = new ArrayList<>();
+        String query = "SELECT * FROM " + USER_ROLE + " WHERE role_id = ?";
+
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setLong(1, roleId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                usersId.add(resultSet.getLong("user_id"));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return usersId;
+    }
+
+    @Override
     public List<Role> findRolesForUser(Long userId) {
         try {
             List<Role> roles = new ArrayList<>();

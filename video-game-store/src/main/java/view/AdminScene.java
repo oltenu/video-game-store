@@ -30,6 +30,7 @@ public class AdminScene extends EmployeeScene {
     private TextField usernameField;
     private PasswordField passwordField;
     private TextField moneyField;
+    private Long userId;
 
     private ChoiceBox<String> rolesChoice;
     private ChoiceBox<String> employeesChoice;
@@ -56,21 +57,7 @@ public class AdminScene extends EmployeeScene {
         adminMenu = new Menu("Admin");
 
         usersItem = new MenuItem("Users...");
-        usersItem.setOnAction(a -> {
-            clearPane();
-
-            mainPane.setTop(menuBar);
-            mainPane.setCenter(usersTable);
-            mainPane.setBottom(crudUsersPane);
-        });
         employeeReportItem = new MenuItem("Employee Report...");
-        employeeReportItem.setOnAction(a -> {
-            clearPane();
-
-            mainPane.setTop(menuBar);
-            mainPane.setCenter(customerOrdersTable);
-            mainPane.setBottom(employeesReportPane);
-        });
 
         adminMenu.getItems().addAll(usersItem, employeeReportItem);
         menuBar.getMenus().add(adminMenu);
@@ -130,6 +117,9 @@ public class AdminScene extends EmployeeScene {
     private void initializeUsersTable() {
         usersTable = new TableView<>();
 
+        TableColumn<User, Long> idColumn = new TableColumn<>("Id");
+        idColumn.setMinWidth(130);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         TableColumn<User, String> usernameColumn = new TableColumn<>("Email");
         usernameColumn.setMinWidth(130);
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
@@ -146,21 +136,21 @@ public class AdminScene extends EmployeeScene {
             selected.next();
             ObservableList<User> selectedUserList = (ObservableList<User>) selected.getList();
             User selectedUser = selectedUserList.get(0);
+            userId = selectedUser.getId();
             usernameField.setText(selectedUser.getUsername());
             moneyField.setText(String.valueOf(selectedUser.getMoney()));
         });
     }
 
-    public void refreshEmployeesReportPanel(List<String> roles) {
+    public void refreshEmployeesReportPanel(List<String> employees) {
         clearPane();
 
         mainPane.setTop(menuBar);
         mainPane.setCenter(customerOrdersTable);
         mainPane.setBottom(employeesReportPane);
-        roles.forEach(role -> rolesChoice.getItems().add(role));
     }
 
-    public void refreshCrudUsersPanel(List<User> users) {
+    public void refreshCrudUsersPanel(List<User> users, List<String> roles) {
         clearPane();
 
         usersTable.setItems(FXCollections.observableList(users));
@@ -168,6 +158,8 @@ public class AdminScene extends EmployeeScene {
         mainPane.setTop(menuBar);
         mainPane.setCenter(usersTable);
         mainPane.setBottom(crudUsersPane);
+
+        roles.forEach(role -> rolesChoice.getItems().add(role));
     }
 
     public void setUsersText(String text) {
@@ -192,6 +184,9 @@ public class AdminScene extends EmployeeScene {
 
     public String getSelectedRole() {
         return rolesChoice.getValue();
+    }
+    public Long getUserId(){
+        return userId;
     }
 
     public String getSelectedEmployee() {

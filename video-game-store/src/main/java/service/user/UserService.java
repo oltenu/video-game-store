@@ -17,4 +17,6 @@ public interface UserService {
     boolean update(User user);
 
     void removeAll();
+
+    List<User> findByRole(String role);
 }
