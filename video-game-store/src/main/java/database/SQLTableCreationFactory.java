@@ -17,7 +17,7 @@ public class SQLTableCreationFactory {
                     "  UNIQUE KEY id_UNIQUE (id)" +
                     ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
             case USER -> "CREATE TABLE IF NOT EXISTS user (" +
-                    "  id INT NOT NULL AUTO_INCREMENT," +
+                    "  id BIGINT(19) NOT NULL AUTO_INCREMENT," +
                     "  username VARCHAR(200) NOT NULL," +
                     "  password VARCHAR(64) NOT NULL," +
                     "  money DOUBLE(10, 2) NOT NULL," +
@@ -25,21 +25,21 @@ public class SQLTableCreationFactory {
                     "  UNIQUE INDEX id_UNIQUE (id ASC)," +
                     "  UNIQUE INDEX username_UNIQUE (username ASC));";
             case ROLE -> "  CREATE TABLE IF NOT EXISTS role (" +
-                    "  id INT NOT NULL AUTO_INCREMENT," +
+                    "  id BIGINT(19) NOT NULL AUTO_INCREMENT," +
                     "  role VARCHAR(100) NOT NULL," +
                     "  PRIMARY KEY (id)," +
                     "  UNIQUE INDEX id_UNIQUE (id ASC)," +
                     "  UNIQUE INDEX role_UNIQUE (role ASC));";
             case RIGHT -> "  CREATE TABLE IF NOT EXISTS `right` (" +
-                    "  `id` INT NOT NULL AUTO_INCREMENT," +
+                    "  `id` BIGINT(19) NOT NULL AUTO_INCREMENT," +
                     "  `right` VARCHAR(100) NOT NULL," +
                     "  PRIMARY KEY (`id`)," +
                     "  UNIQUE INDEX `id_UNIQUE` (`id` ASC)," +
                     "  UNIQUE INDEX `right_UNIQUE` (`right` ASC));";
             case ROLE_RIGHT -> "  CREATE TABLE IF NOT EXISTS role_right (" +
-                    "  id INT NOT NULL AUTO_INCREMENT," +
-                    "  role_id INT NOT NULL," +
-                    "  right_id INT NOT NULL," +
+                    "  id BIGINT(19) NOT NULL AUTO_INCREMENT," +
+                    "  role_id BIGINT(19) NOT NULL," +
+                    "  right_id BIGINT(19) NOT NULL," +
                     "  PRIMARY KEY (id)," +
                     "  UNIQUE INDEX id_UNIQUE (id ASC)," +
                     "  INDEX role_id_idx (role_id ASC)," +
@@ -55,9 +55,9 @@ public class SQLTableCreationFactory {
                     "    ON DELETE CASCADE" +
                     "    ON UPDATE CASCADE);";
             case USER_ROLE -> " CREATE TABLE IF NOT EXISTS user_role (" +
-                    "  id INT NOT NULL AUTO_INCREMENT," +
-                    "  user_id INT NOT NULL," +
-                    "  role_id INT NOT NULL," +
+                    "  id BIGINT(19) NOT NULL AUTO_INCREMENT," +
+                    "  user_id BIGINT(19) NOT NULL," +
+                    "  role_id BIGINT(19) NOT NULL," +
                     "  PRIMARY KEY (id)," +
                     "  UNIQUE INDEX id_UNIQUE (id ASC)," +
                     "  INDEX user_id_idx (user_id ASC)," +
@@ -73,9 +73,9 @@ public class SQLTableCreationFactory {
                     "    ON DELETE CASCADE" +
                     "    ON UPDATE CASCADE);";
             case ORDER -> " CREATE TABLE IF NOT EXISTS `order` (" +
-                    "  id INT NOT NULL AUTO_INCREMENT," +
-                    "  customer_id INT NOT NULL," +
-                    "  employee_id INT NOT NULL," +
+                    "  id BIGINT(19) NOT NULL AUTO_INCREMENT," +
+                    "  customer_id BIGINT(19) NOT NULL," +
+                    "  employee_id BIGINT(19) NOT NULL," +
                     "  game_id BIGINT(19) NOT NULL," +
                     "  amount INT NOT NULL," +
                     "  total_price DOUBLE(10, 2) NOT NULL," +
@@ -97,8 +97,8 @@ public class SQLTableCreationFactory {
                     "    ON DELETE CASCADE" +
                     "    ON UPDATE CASCADE);";
             case SALT -> "CREATE TABLE IF NOT EXISTS `salt` (" +
-                    "  id INT NOT NULL AUTO_INCREMENT," +
-                    "  user_id INT NOT NULL," +
+                    "  id BIGINT(19) NOT NULL AUTO_INCREMENT," +
+                    "  user_id BIGINT(19) NOT NULL," +
                     "  user_salt VARCHAR(64) NOT NULL," +
                     "  PRIMARY KEY (id)," +
                     "  UNIQUE INDEX id_UNIQUE (id ASC)," +

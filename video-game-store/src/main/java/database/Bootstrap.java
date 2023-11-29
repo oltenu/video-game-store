@@ -15,8 +15,6 @@ import static database.Constants.Roles.ROLES;
 import static database.Constants.Schemas.*;
 import static database.Constants.getRolesRights;
 
-// Script - code that automates some steps or processes
-
 public class Bootstrap {
 
     private static RightsRolesRepository rightsRolesRepository;
