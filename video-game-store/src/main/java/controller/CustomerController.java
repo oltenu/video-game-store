@@ -20,9 +20,8 @@ public class CustomerController {
     private final VideoGameService videoGameService;
     private final OrderService orderService;
 
-    public CustomerController(Window window, CustomerScene customerScene,
-                              AuthenticationService authenticationService, VideoGameService videoGameService,
-                              OrderService orderService) {
+    public CustomerController(Window window, CustomerScene customerScene, AuthenticationService authenticationService,
+                              VideoGameService videoGameService, OrderService orderService) {
         this.window = window;
         this.customerScene = customerScene;
         this.authenticationService = authenticationService;

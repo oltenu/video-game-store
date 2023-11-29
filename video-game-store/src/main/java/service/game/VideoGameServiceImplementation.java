@@ -28,6 +28,17 @@ public class VideoGameServiceImplementation implements VideoGameService {
     @Override
     public Notification<Boolean> save(VideoGame videoGame) {
         Notification<Boolean> saveNotification = new Notification<>();
+        if (videoGame.getName().isEmpty()){
+            saveNotification.setResult(Boolean.FALSE);
+            saveNotification.addError("A game needs a name!");
+        }
+
+        if(videoGame.getDescription().isEmpty()){
+            saveNotification.setResult(Boolean.FALSE);
+            saveNotification.addError("A game needs a description!");
+        }
+
+        //TO DO validator
 
         if (videoGameRepository.save(videoGame)) {
             saveNotification.setResult(Boolean.TRUE);

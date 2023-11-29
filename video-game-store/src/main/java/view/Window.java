@@ -35,7 +35,7 @@ public class Window {
         primaryStage.setResizable(false);
         Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game_store.png")));
         primaryStage.getIcons().add(icon);
-        primaryStage.setScene(employeeScene);
+        primaryStage.setScene(loginScene);
     }
 
     public void setScene(int index) {
@@ -46,15 +46,12 @@ public class Window {
             }
             case 1 -> {
                 primaryStage.setScene(customerScene);
-                customerScene.initializeMenuCustomer();
             }
             case 2 -> {
                 primaryStage.setScene(employeeScene);
-                employeeScene.initializeMenuEmployee();
             }
             case 3 -> {
                 primaryStage.setScene(adminScene);
-                adminScene.initializeMenuAdmin();
             }
         }
     }

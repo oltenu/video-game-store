@@ -9,7 +9,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -18,12 +17,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import model.Order;
 import model.VideoGame;
-import model.builder.VideoGameBuilder;
 
-import java.sql.PseudoColumnUsage;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,27 +54,10 @@ public class EmployeeScene extends CustomerScene {
     }
 
     public void initializeMenuEmployee() {
+        //super.initializeMenuCustomer();
         employeeMenu = new Menu("Employee");
         gamesItem = new MenuItem("Games...");
-        gamesItem.setOnAction(a -> {
-            /*gamesTable.setItems(FXCollections.observableList(Arrays.asList(new VideoGameBuilder()
-                    .setId(1L)
-                    .setPrice(100.0)
-                    .setName("Minecraft")
-                    .setAmount(10)
-                    .setReleaseDate(LocalDate.now())
-                    .setDescription("Toxic Game")
-                    .build())));*/
-            mainPane.setTop(menuBar);
-            mainPane.setCenter(gamesTable);
-            mainPane.setBottom(crudGamePane);
-        });
         salesReportItem = new MenuItem("Sales...");
-        salesReportItem.setOnAction(a -> {
-            mainPane.setTop(menuBar);
-            mainPane.setCenter(customerOrdersTable);
-            mainPane.setBottom(salesReportPane);
-        });
 
         employeeMenu.getItems().addAll(gamesItem, salesReportItem);
         menuBar.getMenus().add(employeeMenu);
@@ -147,15 +126,6 @@ public class EmployeeScene extends CustomerScene {
             priceField.setText(String.valueOf(selectedGame.getPrice()));
             releasedDateField.setText(String.valueOf(selectedGame.getReleasedDate()));
         });
-
-        gamesTable.setItems(FXCollections.observableList(Arrays.asList(new VideoGameBuilder()
-                .setId(1L)
-                .setPrice(100.0)
-                .setName("Minecraft")
-                .setAmount(10)
-                .setReleaseDate(LocalDate.now())
-                .setDescription("Toxic Game")
-                .build())));
     }
 
     private void initializeSalesReportPane() {
@@ -176,7 +146,7 @@ public class EmployeeScene extends CustomerScene {
         BorderPane.setMargin(salesReportPane, new javafx.geometry.Insets(20));
     }
 
-    public void refreshGamePane(List<VideoGame> games) {
+    public void refreshGamePaneEmployee(List<VideoGame> games) {
         super.refreshGamePane(games);
 
         mainPane.setBottom(crudGamePane);
@@ -197,27 +167,27 @@ public class EmployeeScene extends CustomerScene {
         mainPane.setBottom(salesReportPane);
     }
 
-    public Long getCreateIdField() {
+    public Long getIdField() {
         return Long.valueOf(idField.getText());
     }
 
-    public String getCreateNameField() {
+    public String getNameField() {
         return nameField.getText();
     }
 
-    public String getCreateDescriptionField() {
+    public String getDescriptionField() {
         return descriptionField.getText();
     }
 
-    public Integer getCreateAmountField() {
+    public Integer getAmountField() {
         return Integer.valueOf(amountField.getText());
     }
 
-    public Double getCreatePriceField() {
+    public Double getPriceField() {
         return Double.valueOf(priceField.getText());
     }
 
-    public LocalDate getCreateReleasedDateField() {
+    public LocalDate getReleasedDateField() {
         String date = releasedDateField.getText();
 
         String regexPattern = "\\d{4}-\\d{2}-\\d{2}";
