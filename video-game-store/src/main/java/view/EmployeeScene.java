@@ -54,7 +54,6 @@ public class EmployeeScene extends CustomerScene {
     }
 
     public void initializeMenuEmployee() {
-        //super.initializeMenuCustomer();
         employeeMenu = new Menu("Employee");
         gamesItem = new MenuItem("Games...");
         salesReportItem = new MenuItem("Sales...");
