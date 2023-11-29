@@ -4,6 +4,7 @@ package repository;
 import database.DatabaseSingleton;
 import model.annotations.DateType;
 import model.annotations.Id;
+import model.annotations.Ignore;
 import model.annotations.MapToDatabase;
 
 import java.beans.IntrospectionException;
@@ -253,6 +254,9 @@ public class AbstractRepository<T> {
                 T instance = constructor.newInstance();
 
                 for (Field field : type.getDeclaredFields()) {
+                    if(field.isAnnotationPresent(Ignore.class)){
+                        continue;
+                    }
                     String fieldName;
                     if (field.isAnnotationPresent(MapToDatabase.class)) {
                         fieldName = field.getAnnotation(MapToDatabase.class).columnName();

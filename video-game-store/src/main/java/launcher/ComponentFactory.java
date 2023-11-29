@@ -74,7 +74,7 @@ public class ComponentFactory {
         this.videoGameService = new VideoGameServiceImplementation(videoGameRepository);
         this.authenticationService = new AuthenticationServiceImplementation(userRepository, rightsRolesRepository);
         this.orderService = new OrderServiceImplementation(userRepository, videoGameRepository, orderRepository);
-        this.userService = new UserServiceImplementation(userRepository, authenticationService);
+        this.userService = new UserServiceImplementation(userRepository, authenticationService, rightsRolesRepository);
 
         this.loginController = new LoginController(loginScene, authenticationService, window);
         this.customerController = new CustomerController(window, customerScene, authenticationService,
