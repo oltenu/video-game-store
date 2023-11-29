@@ -1,6 +1,7 @@
 package model;
 
 import model.annotations.Id;
+import model.annotations.Ignore;
 
 import java.util.List;
 import java.util.Objects;
@@ -9,6 +10,7 @@ public class Role {
     @Id
     private Long id;
     private String role;
+    @Ignore
     private List<Right> rights;
 
     public Role(Long id, String role, List<Right> rights) {

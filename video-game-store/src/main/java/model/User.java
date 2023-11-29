@@ -1,6 +1,7 @@
 package model;
 
 import model.annotations.Id;
+import model.annotations.Ignore;
 
 import java.util.List;
 import java.util.Objects;
@@ -11,6 +12,7 @@ public class User {
     private String username;
     private String password;
     private Double money;
+    @Ignore
     private List<Role> roles;
 
     public Long getId() {
