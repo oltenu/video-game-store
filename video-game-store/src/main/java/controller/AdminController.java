@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static database.Constants.Roles.EMPLOYEE;
-import static database.Constants.Roles.ROLES;
+import static database.Constants.Roles.*;
 
 public class AdminController extends EmployeeController {
     private final Window window;
@@ -62,6 +61,8 @@ public class AdminController extends EmployeeController {
         @Override
         public void handle(javafx.event.ActionEvent event) {
             List<User> employees = userService.findByRole(EMPLOYEE);
+            List<User> admins = userService.findByRole(ADMINISTRATOR);
+            employees.addAll(admins);
             List<String> employeesString = new ArrayList<>();
             employees.forEach(employee -> employeesString.add(
                     employee.getId() + ": " + employee.getUsername()));
@@ -141,7 +142,7 @@ public class AdminController extends EmployeeController {
         @Override
         public void handle(javafx.event.ActionEvent event) {
             String selectedEmployee = adminScene.getSelectedEmployee();
-            Long employeeId = Long.getLong(String.valueOf(selectedEmployee.charAt(0)));
+            Long employeeId = Long.parseLong(String.valueOf(selectedEmployee.charAt(0)));
 
             List<Order> orders = orderService.findAllEmployeeSales(employeeId);
 
