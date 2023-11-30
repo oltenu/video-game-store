@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static database.Constants.Roles.ADMINISTRATOR;
 import static database.Constants.Roles.EMPLOYEE;
 
 public class OrderServiceImplementation implements OrderService {
@@ -70,7 +71,7 @@ public class OrderServiceImplementation implements OrderService {
         User employee = users.stream()
                 .filter(u -> u.getRoles()
                         .stream()
-                        .anyMatch(role -> EMPLOYEE.equals(role.getRole()))).findFirst().orElse(null);
+                        .anyMatch(role -> EMPLOYEE.equals(role.getRole()) || ADMINISTRATOR.equals(role.getRole()))).findFirst().orElse(null);
         buyGameNotification.setResult(Boolean.TRUE);
 
         if (user == null) {

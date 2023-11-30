@@ -7,6 +7,8 @@ import repository.AbstractRepository;
 import repository.security.RightsRolesRepository;
 
 import java.sql.*;
+import java.util.List;
+import java.util.Optional;
 
 import static database.Constants.Tables.USER;
 
@@ -19,6 +21,16 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
 
         this.connection = connection;
         this.rightsRolesRepository = rightsRolesRepository;
+    }
+
+    public Optional<User> findById(Long id) {
+        Optional<User> user = super.findById(id);
+        if (user.isPresent()) {
+            User actualUser = user.get();
+            actualUser.setRoles(rightsRolesRepository.findRolesForUser(actualUser.getId()));
+        }
+
+        return user;
     }
 
     public boolean save(User user, String salt) {
@@ -46,7 +58,7 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
 
     }
 
-    public boolean update(User user){
+    public boolean update(User user) {
         String query = "UPDATE `user` " +
                 " SET username = ?, password = ?, money = ? " +
                 " WHERE id = ?";
@@ -60,7 +72,7 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
             preparedStatement.executeUpdate();
 
             rightsRolesRepository.updateRolesToUser(user, user.getRoles());
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
 
             return false;
@@ -162,5 +174,12 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
         }
 
         return salt;
+    }
+
+    public List<User> findAll() {
+        List<User> users = super.findAll();
+        users.forEach(user -> user.setRoles(rightsRolesRepository.findRolesForUser(user.getId())));
+
+        return users;
     }
 }

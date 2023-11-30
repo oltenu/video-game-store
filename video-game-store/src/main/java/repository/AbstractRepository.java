@@ -120,7 +120,9 @@ public class AbstractRepository<T> {
             questionMarks.deleteCharAt(questionMarks.length() - 1);
 
             String query = "INSERT INTO "
+                    + "`"
                     + table
+                    + "`"
                     + "("
                     + names
                     + ")"
