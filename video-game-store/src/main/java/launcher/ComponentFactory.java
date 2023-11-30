@@ -78,9 +78,9 @@ public class ComponentFactory {
 
         this.loginController = new LoginController(loginScene, authenticationService, window);
         this.customerController = new CustomerController(window, customerScene, authenticationService,
-                videoGameService, orderService);
+                videoGameService, orderService, userService);
         this.employeeController = new EmployeeController(window, employeeScene, authenticationService, videoGameService,
-                orderService);
+                orderService, userService);
         this.adminController = new AdminController(window, adminScene, videoGameService, orderService, userService,
                 authenticationService);
     }

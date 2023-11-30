@@ -31,7 +31,7 @@ public class AdminController extends EmployeeController {
 
     public AdminController(Window window, AdminScene adminScene, VideoGameService videoGameService,
                            OrderService orderService, UserService userService, AuthenticationService authenticationService) {
-        super(window, adminScene, authenticationService, videoGameService, orderService);
+        super(window, adminScene, authenticationService, videoGameService, orderService, userService);
 
         this.window = window;
         this.adminScene = adminScene;

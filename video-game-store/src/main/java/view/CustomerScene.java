@@ -210,7 +210,7 @@ public class CustomerScene extends Scene {
     }
 
     public void clearPane() {
-        mainPane.setTop(new StackPane());
+        mainPane.setTop(menuBar);
         mainPane.setBottom(new StackPane());
         mainPane.setCenter(new StackPane());
         mainPane.setRight(new StackPane());

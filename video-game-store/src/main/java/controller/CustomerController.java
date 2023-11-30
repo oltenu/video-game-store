@@ -3,10 +3,12 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import model.Role;
+import model.User;
 import model.validator.Notification;
 import service.game.VideoGameService;
 import service.order.OrderService;
 import service.user.AuthenticationService;
+import service.user.UserService;
 import view.CustomerScene;
 import view.Window;
 
@@ -19,10 +21,12 @@ public class CustomerController {
     private final AuthenticationService authenticationService;
     private final VideoGameService videoGameService;
     private final OrderService orderService;
+    private final UserService userService;
 
     public CustomerController(Window window, CustomerScene customerScene, AuthenticationService authenticationService,
-                              VideoGameService videoGameService, OrderService orderService) {
+                              VideoGameService videoGameService, OrderService orderService, UserService userService) {
         this.window = window;
+        this.userService = userService;
         this.customerScene = customerScene;
         this.authenticationService = authenticationService;
         this.videoGameService = videoGameService;
@@ -36,14 +40,16 @@ public class CustomerController {
     }
 
     public void setUserData() {
+        User user = userService.findById(window.getActiveUser().getId());
+
         String role = "Customer";
-        if (window.getActiveUser().getRoles().stream().map(Role::getRole).toList().contains(ADMINISTRATOR)) {
+        if (user.getRoles().stream().map(Role::getRole).toList().contains(ADMINISTRATOR)) {
             role = "Administrator";
-        } else if (window.getActiveUser().getRoles().stream().map(Role::getRole).toList().contains(EMPLOYEE)) {
+        } else if (user.getRoles().stream().map(Role::getRole).toList().contains(EMPLOYEE)) {
             role = "Employee";
         }
 
-        customerScene.setUserData(window.getActiveUser().getUsername(), window.getActiveUser().getMoney().toString(), role);
+        customerScene.setUserData(user.getUsername(), user.getMoney().toString(), role);
     }
 
     private class HomeItemListener implements EventHandler<ActionEvent> {
@@ -61,6 +67,7 @@ public class CustomerController {
         public void handle(javafx.event.ActionEvent event) {
             authenticationService.logout(window.getActiveUser());
             window.setActiveUser(null);
+            customerScene.clearPane();
 
             window.setScene(0);
         }

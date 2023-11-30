@@ -8,6 +8,7 @@ import model.validator.Notification;
 import service.game.VideoGameService;
 import service.order.OrderService;
 import service.user.AuthenticationService;
+import service.user.UserService;
 import view.EmployeeScene;
 import view.Window;
 
@@ -20,8 +21,8 @@ public class EmployeeController extends CustomerController {
     private final OrderService orderService;
 
     public EmployeeController(Window window, EmployeeScene employeeScene, AuthenticationService authenticationService,
-                              VideoGameService videoGameService, OrderService orderService) {
-        super(window, employeeScene, authenticationService, videoGameService, orderService);
+                              VideoGameService videoGameService, OrderService orderService, UserService userService) {
+        super(window, employeeScene, authenticationService, videoGameService, orderService, userService);
 
         this.window = window;
         this.employeeScene = employeeScene;
