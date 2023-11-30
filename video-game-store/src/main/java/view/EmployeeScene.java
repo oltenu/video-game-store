@@ -26,7 +26,6 @@ public class EmployeeScene extends CustomerScene {
     private MenuItem gamesItem;
     private MenuItem salesReportItem;
 
-    private TextField idField;
     private TextField nameField;
     private TextField descriptionField;
     private TextField amountField;
@@ -74,10 +73,6 @@ public class EmployeeScene extends CustomerScene {
 
         buttonBox.getChildren().addAll(addGameButton, updateGameButton, deleteGameButton);
 
-        idField = new TextField();
-        idField.setMaxWidth(50);
-        Label idLabel = new Label("Id:");
-        idLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
         nameField = new TextField();
         nameField.setMaxWidth(80);
         Label nameLabel = new Label("Name");
@@ -99,7 +94,7 @@ public class EmployeeScene extends CustomerScene {
         Label releasedDateLabel = new Label("Date:");
         releasedDateLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 12));
 
-        fieldsBox.getChildren().addAll(new HBox(idLabel, idField), new HBox(nameLabel, nameField),
+        fieldsBox.getChildren().addAll(new HBox(nameLabel, nameField),
                 new HBox(descriptionLabel, descriptionField), new HBox(amountLabel, amountField),
                 new HBox(priceLabel, priceField), new HBox(releasedDateLabel, releasedDateField));
 
@@ -112,7 +107,7 @@ public class EmployeeScene extends CustomerScene {
         BorderPane.setMargin(crudGamePane, new javafx.geometry.Insets(20));
         gamesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                idField.setText(String.valueOf(newValue.getId()));
+                selectedGameId = newValue.getId();
                 nameField.setText(newValue.getName());
                 descriptionField.setText(newValue.getDescription());
                 amountField.setText(String.valueOf(newValue.getAmount()));
@@ -144,7 +139,7 @@ public class EmployeeScene extends CustomerScene {
         super.refreshGamePane(games);
 
         mainPane.setBottom(crudGamePane);
-        idField.clear();
+        selectedGameId = null;
         nameField.clear();
         descriptionField.clear();
         amountField.clear();
@@ -154,15 +149,22 @@ public class EmployeeScene extends CustomerScene {
 
     public void refreshSalesPane(List<Order> orders) {
         clearPane();
-        customerOrdersTable.setItems(FXCollections.observableList(orders));
+        ordersTable.getItems().clear();
+        ordersTable.setItems(FXCollections.observableList(orders));
 
         mainPane.setTop(menuBar);
-        mainPane.setCenter(customerOrdersTable);
+        mainPane.setCenter(ordersTable);
         mainPane.setBottom(salesReportPane);
     }
 
     public Long getIdField() {
-        return Long.valueOf(idField.getText());
+        if (selectedGameId == null) {
+            gameText.setText("No game selected!");
+
+            return 0L;
+        }
+
+        return selectedGameId;
     }
 
     public String getNameField() {

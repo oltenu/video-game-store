@@ -31,11 +31,11 @@ public class CustomerScene extends Scene {
     private VBox userPane;
 
     protected TableView<VideoGame> gamesTable;
-    protected TableView<Order> customerOrdersTable;
+    protected TableView<Order> ordersTable;
 
     protected Button buyButton;
 
-    protected TextField buyGameIdTextField;
+    protected Long selectedGameId;
     protected TextField buyGameNameTextField;
     protected TextField buyAmountTextField;
 
@@ -95,7 +95,9 @@ public class CustomerScene extends Scene {
         gamesTable = new TableView<>();
 
         TableColumn<VideoGame, Long> idColumn = new TableColumn<>("Id");
-        idColumn.setMinWidth(50);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPrefWidth(0);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         TableColumn<VideoGame, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setMinWidth(200);
@@ -118,18 +120,15 @@ public class CustomerScene extends Scene {
         gamesTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         gamesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                buyGameIdTextField.setText(String.valueOf(newValue.getId()));
+                selectedGameId = newValue.getId();
                 buyGameNameTextField.setText(newValue.getName());
             }
         });
     }
 
     private void initializeOrderTable() {
-        customerOrdersTable = new TableView<>();
+        ordersTable = new TableView<>();
 
-        TableColumn<Order, Long> idColumn = new TableColumn<>("Id");
-        idColumn.setMinWidth(130);
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         TableColumn<Order, Long> customerIdColumn = new TableColumn<>("Customer Id");
         customerIdColumn.setMinWidth(130);
         customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
@@ -146,9 +145,9 @@ public class CustomerScene extends Scene {
         totalPriceColumn.setMinWidth(130);
         totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
 
-        customerOrdersTable.getColumns().addAll(idColumn, customerIdColumn, employeeIdColumn,
+        ordersTable.getColumns().addAll(customerIdColumn, employeeIdColumn,
                 gameIdColumn, amountColumn, totalPriceColumn);
-        customerOrdersTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        ordersTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
     private void initializeBuyPane() {
@@ -157,17 +156,13 @@ public class CustomerScene extends Scene {
         buyPane.setPadding(new Insets(25, 25, 25, 25));
 
         HBox buyBox = new HBox(50);
-        buyGameIdTextField = new TextField();
-        buyGameIdTextField.setEditable(false);
-        buyGameIdTextField.setMaxWidth(30);
         buyGameNameTextField = new TextField();
         buyGameNameTextField.setEditable(false);
         buyAmountTextField = new TextField();
         buyAmountTextField.setMaxWidth(30);
         buyButton = new Button("Buy");
 
-        buyBox.getChildren().addAll(new HBox(new Label("Id:"), buyGameIdTextField),
-                new HBox(new Label("Game:"), buyGameNameTextField),
+        buyBox.getChildren().addAll(new HBox(new Label("Game:"), buyGameNameTextField),
                 new HBox(new Label("Amount:"), buyAmountTextField, buyButton));
 
         buyText = new Text();
@@ -186,13 +181,16 @@ public class CustomerScene extends Scene {
     public void refreshHomePane() {
         clearPane();
 
-        mainPane.setTop(menuBar);
         mainPane.setCenter(userPane);
     }
 
     public void refreshGamePane(List<VideoGame> games) {
         clearPane();
 
+        gamesTable.getItems().clear();
+        buyGameNameTextField.clear();
+        buyAmountTextField.clear();
+        selectedGameId = null;
         gamesTable.setItems(FXCollections.observableList(games));
         mainPane.setTop(menuBar);
         mainPane.setCenter(gamesTable);
@@ -201,12 +199,11 @@ public class CustomerScene extends Scene {
 
     public void refreshOrderPane(List<Order> orders) {
         clearPane();
-        customerOrdersTable.setItems(FXCollections.observableList(orders));
+        ordersTable.getItems().clear();
+        ordersTable.setItems(FXCollections.observableList(orders));
 
         mainPane.setTop(menuBar);
-        mainPane.setCenter(customerOrdersTable);
-        buyGameIdTextField.clear();
-        buyAmountTextField.clear();
+        mainPane.setCenter(ordersTable);
     }
 
     public void clearPane() {
@@ -218,13 +215,13 @@ public class CustomerScene extends Scene {
     }
 
     public Long getSelectedGameId() {
-        if (buyGameIdTextField.getText().isEmpty()) {
+        if (selectedGameId == null) {
             setBuyResult("No product selected!");
 
             return 0L;
         }
 
-        return Long.valueOf(buyGameIdTextField.getText());
+        return selectedGameId;
     }
 
     public Integer getAmount() {

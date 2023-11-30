@@ -81,7 +81,6 @@ public class AdminScene extends EmployeeScene {
         moneyField.setMaxWidth(60);
         Label moneyLabel = new Label("Money:");
         rolesChoice = new ChoiceBox<>();
-        rolesChoice.setValue("customer");
         Label rolesLabel = new Label("Role:");
         fieldsBox.getChildren().addAll(new HBox(usernameLabel, usernameField),
                 new HBox(passwordLabel, passwordField), new HBox(moneyLabel, moneyField), new HBox(rolesLabel, rolesChoice));
@@ -142,16 +141,22 @@ public class AdminScene extends EmployeeScene {
 
     public void refreshEmployeesReportPanel(List<String> employees) {
         clearPane();
+        employeesChoice.getItems().clear();
 
         mainPane.setTop(menuBar);
-        mainPane.setCenter(customerOrdersTable);
+        mainPane.setCenter(ordersTable);
         mainPane.setBottom(employeesReportPane);
 
         employees.forEach(employee -> employeesChoice.getItems().add(employee));
+        employeesChoice.setValue(employeesChoice.getItems().get(0));
     }
 
     public void refreshCrudUsersPanel(List<User> users, List<String> roles) {
         clearPane();
+        usernameField.clear();
+        passwordField.clear();
+        moneyField.clear();
+        rolesChoice.getItems().clear();
 
         usersTable.setItems(FXCollections.observableList(users));
 
@@ -160,6 +165,7 @@ public class AdminScene extends EmployeeScene {
         mainPane.setBottom(crudUsersPane);
 
         roles.forEach(role -> rolesChoice.getItems().add(role));
+        rolesChoice.setValue(rolesChoice.getItems().get(0));
     }
 
     public void setUsersText(String text) {
@@ -195,7 +201,7 @@ public class AdminScene extends EmployeeScene {
     }
 
     public void setOrdersTable(List<Order> orders) {
-        customerOrdersTable.setItems(FXCollections.observableList(orders));
+        ordersTable.setItems(FXCollections.observableList(orders));
     }
 
     public void addUsersItemListener(EventHandler<ActionEvent> usersItemListener) {
