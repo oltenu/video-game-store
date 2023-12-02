@@ -63,6 +63,20 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public boolean update(User user) {
+        User dbUser = findById(user.getId());
+        if(user.getUsername().isEmpty()){
+            user.setUsername(dbUser.getUsername());
+        }
+
+        if(user.getPassword().isEmpty()){
+            user.setPassword(dbUser.getPassword());
+        }else{
+            String salt = authenticationService.getUserSaltById(user.getId());
+            user.setPassword(authenticationService.hashPassword(user.getPassword() + salt));
+        }
+
+
+
         return userRepository.update(user);
     }
 

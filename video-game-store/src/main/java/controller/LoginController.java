@@ -42,7 +42,6 @@ public class LoginController {
             if (loginNotification.hasErrors()) {
                 loginScene.setActionTargetText(loginNotification.getFormattedErrors());
             } else {
-                loginScene.setActionTargetText("LogIn Successful!");
                 User user = loginNotification.getResult();
                 window.setActiveUser(user);
                 List<Role> roles = user.getRoles();

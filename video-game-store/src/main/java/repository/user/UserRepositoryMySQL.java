@@ -82,9 +82,8 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
     }
 
     @Override
-    public Notification<User> findByUsernameAndPassword(String username, String password) {
-        Notification<User> findByUsernameAndPasswordNotification = new Notification<>();
-        try {
+    public Long getUserId(String username){
+        try{
             PreparedStatement preparedStatement;
 
             String query =
@@ -94,16 +93,25 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
 
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            Long userId = resultSet.getLong("id");
-            String salt = getUserSalt(userId);
-            String saltedPassword = password + salt;
 
+            return resultSet.getLong("id");
+        }catch (SQLException e){
+            e.printStackTrace();
+
+            return 0L;
+        }
+    }
+
+    @Override
+    public Notification<User> findByUsernameAndPassword(String username, String password) {
+        Notification<User> findByUsernameAndPasswordNotification = new Notification<>();
+        try {
             String query2 = "Select * from `" + USER + "` where `username`= ? and `password` = ?";
             PreparedStatement second = connection.prepareStatement(query2);
             second.setString(1, username);
-            second.setString(2, saltedPassword);
+            second.setString(2, password);
 
-            ResultSet userResultSet = preparedStatement.executeQuery();
+            ResultSet userResultSet = second.executeQuery();
 
             if (userResultSet.next()) {
                 User user = new UserBuilder()

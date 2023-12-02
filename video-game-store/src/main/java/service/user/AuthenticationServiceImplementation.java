@@ -65,7 +65,15 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
 
     @Override
     public Notification<User> login(String username, String password) {
-        return userRepository.findByUsernameAndPassword(username, hashPassword(password));
+        if (userRepository.existsByUsername(username)) {
+            String salt = getUserSaltByUsername(username);
+            return userRepository.findByUsernameAndPassword(username, hashPassword(password + salt));
+        } else {
+            Notification<User> notification = new Notification<>();
+            notification.addError("Invalid username or password");
+            return notification;
+        }
+
     }
 
     @Override
@@ -81,14 +89,26 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
         return !response;
     }
 
-    private String generateSalt() {
+    @Override
+    public String generateSalt() {
         SecureRandom secureRandom = new SecureRandom();
         byte[] salt = new byte[SALT_LENGTH];
         secureRandom.nextBytes(salt);
         return Base64.getEncoder().encodeToString(salt);
     }
 
-    private String hashPassword(String password) {
+    @Override
+    public String getUserSaltByUsername(String username) {
+        return userRepository.getUserSalt(userRepository.getUserId(username));
+    }
+
+    @Override
+    public String getUserSaltById(Long id) {
+        return userRepository.getUserSalt(id);
+    }
+
+    @Override
+    public String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));

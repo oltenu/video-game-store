@@ -28,4 +28,6 @@ public interface UserRepository {
     void addUserSalt(Long userId, String salt);
 
     String getUserSalt(Long userId);
+
+    Long getUserId(String username);
 }
