@@ -1,7 +1,11 @@
 package controller;
 
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfWriter;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import model.Order;
+import model.User;
 import model.VideoGame;
 import model.builder.VideoGameBuilder;
 import model.validator.Notification;
@@ -12,7 +16,11 @@ import service.user.UserService;
 import view.EmployeeScene;
 import view.Window;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 public class EmployeeController extends CustomerController {
     private final Window window;
@@ -131,7 +139,40 @@ public class EmployeeController extends CustomerController {
 
         @Override
         public void handle(javafx.event.ActionEvent event) {
-            //To do
+            User employee = window.getActiveUser();
+            Long employeeId = employee.getId();
+            String fileName = "src/main/resources/" + employee.getUsername() + "-sales-report.pdf";
+            String titleUser = employee.getUsername() + " Sales\n\n";
+            StringBuilder sales = new StringBuilder();
+            List<Order> employeeSales = orderService.findAllEmployeeSales(employeeId);
+
+            int cnt = 0;
+            for (Order order : employeeSales) {
+                sales.append(order.getId()).append(": ").append("Customer: ")
+                        .append(cnt++).append(" | Game: ").append(order.getGameId()).append(" | Amount: ")
+                        .append(order.getAmount()).append(" | Total price: ").append(order.getTotalPrice()).append("\n");
+            }
+
+            Document document = new Document();
+            try {
+                PdfWriter.getInstance(document, new FileOutputStream(fileName));
+                document.open();
+                Font titleFont = new Font(Font.COURIER, 14, Font.BOLD);
+                Font salesFont = new Font(Font.COURIER, 12);
+
+                Chunk titleChunk = new Chunk(titleUser, titleFont);
+                Chunk salesChunk = new Chunk(sales.toString(), salesFont);
+
+                Paragraph paragraph = new Paragraph();
+                paragraph.add(titleChunk);
+                paragraph.add(salesChunk);
+
+                document.add(paragraph);
+
+                document.close();
+            } catch (DocumentException | FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
