@@ -4,6 +4,7 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import model.JointOrder;
 import model.Order;
 import model.User;
 import model.VideoGame;
@@ -144,13 +145,14 @@ public class EmployeeController extends CustomerController {
             String fileName = "src/main/resources/" + employee.getUsername() + "-sales-report.pdf";
             String titleUser = employee.getUsername() + " Sales\n\n";
             StringBuilder sales = new StringBuilder();
-            List<Order> employeeSales = orderService.findAllEmployeeSales(employeeId);
+            List<JointOrder> employeeSales = orderService.findAllEmployeeSales(employeeId);
 
-            int cnt = 0;
-            for (Order order : employeeSales) {
-                sales.append(order.getId()).append(": ").append("Customer: ")
-                        .append(cnt++).append(" | Game: ").append(order.getGameId()).append(" | Amount: ")
-                        .append(order.getAmount()).append(" | Total price: ").append(order.getTotalPrice()).append("\n");
+            int cnt = 1;
+            for (JointOrder order : employeeSales) {
+                sales.append(cnt++).append(": ").append("Game: ")
+                        .append(order.getGameName()).append(" | Customer: ").append(order.getCustomerUsername())
+                        .append(" | Amount: ").append(order.getAmount()).append(" | Total price: ")
+                        .append(order.getTotalPrice()).append("\n");
             }
 
             Document document = new Document();

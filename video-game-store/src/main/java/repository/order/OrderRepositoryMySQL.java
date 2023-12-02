@@ -1,7 +1,8 @@
 package repository.order;
 
+import model.JointOrder;
 import model.Order;
-import model.builder.OrderBuilder;
+import model.builder.JointOrderBuilder;
 import repository.AbstractRepository;
 
 import java.sql.Connection;
@@ -20,9 +21,25 @@ public class OrderRepositoryMySQL extends AbstractRepository<Order> implements O
     }
 
     @Override
-    public List<Order> findAllCustomerOrders(Long customerId) {
-        List<Order> orders = new ArrayList<>();
-        String query = "SELECT * FROM `order` WHERE customer_id = ?";
+    public List<JointOrder> findAllCustomerOrders(Long customerId) {
+        List<JointOrder> orders = new ArrayList<>();
+        String query = """
+                SELECT
+                    `Order`.id as order_id,
+                    video_game.name as game_name,
+                    UserCustomer.username as customer_username,
+                    UserEmployee.username as employee_username,
+                    `Order`.amount,
+                    `Order`.total_price
+                FROM
+                    `Order`
+                JOIN
+                    `video_game` ON `Order`.game_id = video_game.id
+                JOIN
+                    `User` as UserCustomer ON `Order`.customer_id = UserCustomer.id
+                JOIN
+                    `User` as UserEmployee ON `Order`.employee_id = UserEmployee.id
+                WHERE customer_id = ?""";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -39,9 +56,25 @@ public class OrderRepositoryMySQL extends AbstractRepository<Order> implements O
     }
 
     @Override
-    public List<Order> findAllEmployeeSales(Long employeeId) {
-        List<Order> orders = new ArrayList<>();
-        String query = "SELECT * FROM `order` WHERE employee_id = ?";
+    public List<JointOrder> findAllEmployeeSales(Long employeeId) {
+        List<JointOrder> orders = new ArrayList<>();
+        String query = """
+                SELECT
+                    `Order`.id as order_id,
+                    video_game.name as game_name,
+                    UserCustomer.username as customer_username,
+                    UserEmployee.username as employee_username,
+                    `Order`.amount,
+                    `Order`.total_price
+                FROM
+                    `Order`
+                JOIN
+                    `video_game` ON `Order`.game_id = video_game.id
+                JOIN
+                    `User` as UserCustomer ON `Order`.customer_id = UserCustomer.id
+                JOIN
+                    `User` as UserEmployee ON `Order`.employee_id = UserEmployee.id
+                WHERE employee_id = ?""";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -57,23 +90,23 @@ public class OrderRepositoryMySQL extends AbstractRepository<Order> implements O
         return orders;
     }
 
-    private List<Order> extractOrders(ResultSet resultSet) throws SQLException {
-        List<Order> orders = new ArrayList<>();
+    private List<JointOrder> extractOrders(ResultSet resultSet) throws SQLException {
+        List<JointOrder> jointOrders = new ArrayList<>();
 
         while (resultSet.next()) {
-            Order order = new OrderBuilder()
-                    .setId(resultSet.getLong("id"))
-                    .setCustomerId(resultSet.getLong("customer_id"))
-                    .setEmployeeId(resultSet.getLong("employee_id"))
-                    .setGameId(resultSet.getLong("game_id"))
+            JointOrder jointOrder = new JointOrderBuilder()
+                    .setId(resultSet.getLong("order_id"))
+                    .setGameName(resultSet.getString("game_name"))
+                    .setCustomerUsername(resultSet.getString("customer_username"))
+                    .setEmployeeUsername(resultSet.getString("employee_username"))
                     .setAmount(resultSet.getInt("amount"))
                     .setTotalPrice(resultSet.getDouble("total_price"))
                     .build();
 
 
-            orders.add(order);
+            jointOrders.add(jointOrder);
         }
 
-        return orders;
+        return jointOrders;
     }
 }

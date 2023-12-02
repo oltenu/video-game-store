@@ -13,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import model.JointOrder;
 import model.Order;
 import model.VideoGame;
 
@@ -147,7 +148,7 @@ public class EmployeeScene extends CustomerScene {
         releasedDateField.clear();
     }
 
-    public void refreshSalesPane(List<Order> orders) {
+    public void refreshSalesPane(List<JointOrder> orders) {
         clearPane();
         ordersTable.getItems().clear();
         ordersTable.setItems(FXCollections.observableList(orders));

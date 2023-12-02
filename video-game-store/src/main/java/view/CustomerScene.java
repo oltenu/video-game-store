@@ -11,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import model.JointOrder;
 import model.Order;
 import model.VideoGame;
 
@@ -31,7 +32,7 @@ public class CustomerScene extends Scene {
     private VBox userPane;
 
     protected TableView<VideoGame> gamesTable;
-    protected TableView<Order> ordersTable;
+    protected TableView<JointOrder> ordersTable;
 
     protected Button buyButton;
 
@@ -129,24 +130,24 @@ public class CustomerScene extends Scene {
     private void initializeOrderTable() {
         ordersTable = new TableView<>();
 
-        TableColumn<Order, Long> customerIdColumn = new TableColumn<>("Customer Id");
-        customerIdColumn.setMinWidth(130);
-        customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-        TableColumn<Order, Long> employeeIdColumn = new TableColumn<>("Employee Id");
-        employeeIdColumn.setMinWidth(130);
-        employeeIdColumn.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
-        TableColumn<Order, Long> gameIdColumn = new TableColumn<>("Game Id");
-        gameIdColumn.setMinWidth(130);
-        gameIdColumn.setCellValueFactory(new PropertyValueFactory<>("gameId"));
-        TableColumn<Order, Integer> amountColumn = new TableColumn<>("Amount");
+        TableColumn<JointOrder, String> gameColumn = new TableColumn<>("Game");
+        gameColumn.setMinWidth(130);
+        gameColumn.setCellValueFactory(new PropertyValueFactory<>("gameName"));
+        TableColumn<JointOrder, String> customerColumn  = new TableColumn<>("Customer");
+        customerColumn.setMinWidth(130);
+        customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerUsername"));
+        TableColumn<JointOrder, String> employeeColumn = new TableColumn<>("Employee");
+        employeeColumn.setMinWidth(130);
+        employeeColumn.setCellValueFactory(new PropertyValueFactory<>("employeeUsername"));
+        TableColumn<JointOrder, Integer> amountColumn = new TableColumn<>("Amount");
         amountColumn.setMinWidth(130);
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
-        TableColumn<Order, Double> totalPriceColumn = new TableColumn<>("Total Price");
+        TableColumn<JointOrder, Double> totalPriceColumn = new TableColumn<>("Total Price");
         totalPriceColumn.setMinWidth(130);
         totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
 
-        ordersTable.getColumns().addAll(customerIdColumn, employeeIdColumn,
-                gameIdColumn, amountColumn, totalPriceColumn);
+        ordersTable.getColumns().addAll(gameColumn, customerColumn,
+                employeeColumn, amountColumn, totalPriceColumn);
         ordersTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
@@ -197,10 +198,10 @@ public class CustomerScene extends Scene {
         mainPane.setBottom(buyPane);
     }
 
-    public void refreshOrderPane(List<Order> orders) {
+    public void refreshOrderPane(List<JointOrder> jointOrders) {
         clearPane();
         ordersTable.getItems().clear();
-        ordersTable.setItems(FXCollections.observableList(orders));
+        ordersTable.setItems(FXCollections.observableList(jointOrders));
 
         mainPane.setTop(menuBar);
         mainPane.setCenter(ordersTable);

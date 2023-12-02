@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import model.JointOrder;
 import model.Order;
 import model.Role;
 import model.User;
@@ -200,7 +201,7 @@ public class AdminScene extends EmployeeScene {
         return employeesChoice.getValue();
     }
 
-    public void setOrdersTable(List<Order> orders) {
+    public void setOrdersTable(List<JointOrder> orders) {
         ordersTable.setItems(FXCollections.observableList(orders));
     }
 

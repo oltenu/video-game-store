@@ -4,6 +4,7 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import model.JointOrder;
 import model.Order;
 import model.Role;
 import model.User;
@@ -144,13 +145,14 @@ public class AdminController extends EmployeeController {
             String fileName = "src/main/resources/" + employee.getUsername() + "-employee-report.pdf";
             String titleUser = employee.getUsername() + " Sales\n\n";
             StringBuilder sales = new StringBuilder();
-            List<Order> employeeSales = orderService.findAllEmployeeSales(employeeId);
+            List<JointOrder> employeeSales = orderService.findAllEmployeeSales(employeeId);
 
-            int cnt = 0;
-            for (Order order : employeeSales) {
-                sales.append(order.getId()).append(": ").append("Customer: ")
-                        .append(cnt++).append(" | Game: ").append(order.getGameId()).append(" | Amount: ")
-                        .append(order.getAmount()).append(" | Total price: ").append(order.getTotalPrice()).append("\n");
+            int cnt = 1;
+            for (JointOrder order : employeeSales) {
+                sales.append(cnt++).append(": ").append("Game: ")
+                        .append(order.getGameName()).append(" | Customer: ").append(order.getCustomerUsername())
+                        .append(" | Amount: ").append(order.getAmount()).append(" | Total price: ")
+                        .append(order.getTotalPrice()).append("\n");
             }
 
             Document document = new Document();
@@ -183,7 +185,7 @@ public class AdminController extends EmployeeController {
             String selectedEmployee = adminScene.getSelectedEmployee();
             Long employeeId = Long.parseLong(String.valueOf(selectedEmployee.charAt(0)));
 
-            List<Order> orders = orderService.findAllEmployeeSales(employeeId);
+            List<JointOrder> orders = orderService.findAllEmployeeSales(employeeId);
 
             adminScene.setOrdersTable(orders);
         }
