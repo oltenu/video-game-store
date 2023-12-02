@@ -117,16 +117,24 @@ public class AdminScene extends EmployeeScene {
         usersTable = new TableView<>();
 
         TableColumn<User, Long> idColumn = new TableColumn<>("Id");
-        idColumn.setMinWidth(130);
+        idColumn.setMinWidth(200);
+        idColumn.setMaxWidth(200);
+        idColumn.setPrefWidth(200);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         TableColumn<User, String> usernameColumn = new TableColumn<>("Email");
-        usernameColumn.setMinWidth(130);
+        usernameColumn.setMinWidth(200);
+        usernameColumn.setMaxWidth(200);
+        usernameColumn.setPrefWidth(200);
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         TableColumn<User, Double> moneyColumn = new TableColumn<>("Money");
-        moneyColumn.setMinWidth(130);
+        moneyColumn.setMinWidth(200);
+        moneyColumn.setMaxWidth(200);
+        moneyColumn.setPrefWidth(200);
         moneyColumn.setCellValueFactory(new PropertyValueFactory<>("money"));
         TableColumn<User, List<Role>> roleColumn = new TableColumn<>("Role");
-        roleColumn.setMinWidth(130);
+        roleColumn.setMinWidth(200);
+        roleColumn.setMaxWidth(200);
+        roleColumn.setPrefWidth(200);
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("roles"));
 
         usersTable.getColumns().addAll(idColumn, usernameColumn, moneyColumn, roleColumn);

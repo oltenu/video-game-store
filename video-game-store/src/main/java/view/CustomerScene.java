@@ -1,5 +1,6 @@
 package view;
 
+import com.lowagie.text.FontFactory;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,6 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import model.JointOrder;
 import model.Order;
@@ -82,8 +85,10 @@ public class CustomerScene extends Scene {
         userNameLabel = new Label("Name:");
         moneyLabel = new Label("Money:");
         userRoleLabel = new Label("Role:");
+        Label welcomeLabel = new Label("Welcome to our store!");
+        welcomeLabel.setFont(Font.font("Courier", FontWeight.BOLD, 20));
 
-        userPane.getChildren().addAll(new Label("Welcome to our store!"), userNameLabel,
+        userPane.getChildren().addAll(welcomeLabel, userNameLabel,
                 moneyLabel, userRoleLabel);
     }
 
@@ -101,19 +106,29 @@ public class CustomerScene extends Scene {
         idColumn.setPrefWidth(0);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         TableColumn<VideoGame, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setMinWidth(200);
+        nameColumn.setMinWidth(195);
+        nameColumn.setMaxWidth(195);
+        nameColumn.setPrefWidth(195);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         TableColumn<VideoGame, String> descriptionColumn = new TableColumn<>("Description");
-        descriptionColumn.setMinWidth(200);
+        descriptionColumn.setMinWidth(195);
+        descriptionColumn.setMaxWidth(195);
+        descriptionColumn.setPrefWidth(195);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         TableColumn<VideoGame, LocalDate> releasedDateColumn = new TableColumn<>("Released Date");
-        releasedDateColumn.setMinWidth(200);
+        releasedDateColumn.setMinWidth(195);
+        releasedDateColumn.setMaxWidth(195);
+        releasedDateColumn.setPrefWidth(195);
         releasedDateColumn.setCellValueFactory(new PropertyValueFactory<>("releasedDate"));
         TableColumn<VideoGame, Integer> amountColumn = new TableColumn<>("Amount");
-        amountColumn.setMinWidth(50);
+        amountColumn.setMinWidth(100);
+        amountColumn.setMaxWidth(100);
+        amountColumn.setPrefWidth(100);
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
         TableColumn<VideoGame, Double> priceColumn = new TableColumn<>("Price");
-        priceColumn.setMinWidth(70);
+        priceColumn.setMinWidth(100);
+        priceColumn.setMaxWidth(100);
+        priceColumn.setPrefWidth(100);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         gamesTable.getColumns().addAll(idColumn, nameColumn, descriptionColumn,
@@ -131,19 +146,29 @@ public class CustomerScene extends Scene {
         ordersTable = new TableView<>();
 
         TableColumn<JointOrder, String> gameColumn = new TableColumn<>("Game");
-        gameColumn.setMinWidth(130);
+        gameColumn.setMinWidth(195);
+        gameColumn.setMaxWidth(195);
+        gameColumn.setPrefWidth(195);
         gameColumn.setCellValueFactory(new PropertyValueFactory<>("gameName"));
         TableColumn<JointOrder, String> customerColumn  = new TableColumn<>("Customer");
-        customerColumn.setMinWidth(130);
+        customerColumn.setMinWidth(195);
+        customerColumn.setMaxWidth(195);
+        customerColumn.setPrefWidth(195);
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerUsername"));
         TableColumn<JointOrder, String> employeeColumn = new TableColumn<>("Employee");
-        employeeColumn.setMinWidth(130);
+        employeeColumn.setMinWidth(195);
+        employeeColumn.setMaxWidth(195);
+        employeeColumn.setPrefWidth(195);
         employeeColumn.setCellValueFactory(new PropertyValueFactory<>("employeeUsername"));
         TableColumn<JointOrder, Integer> amountColumn = new TableColumn<>("Amount");
-        amountColumn.setMinWidth(130);
+        amountColumn.setMinWidth(100);
+        amountColumn.setMaxWidth(100);
+        amountColumn.setPrefWidth(100);
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
         TableColumn<JointOrder, Double> totalPriceColumn = new TableColumn<>("Total Price");
-        totalPriceColumn.setMinWidth(130);
+        totalPriceColumn.setMinWidth(100);
+        totalPriceColumn.setMaxWidth(100);
+        totalPriceColumn.setPrefWidth(100);
         totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
 
         ordersTable.getColumns().addAll(gameColumn, customerColumn,
