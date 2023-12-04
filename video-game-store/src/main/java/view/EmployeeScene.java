@@ -13,15 +13,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import model.JointOrder;
-import model.Order;
+import model.JoinedOrder;
 import model.VideoGame;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class EmployeeScene extends CustomerScene {
     private MenuItem gamesItem;
@@ -108,7 +103,7 @@ public class EmployeeScene extends CustomerScene {
         BorderPane.setMargin(crudGamePane, new javafx.geometry.Insets(20));
         gamesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                selectedGameId = newValue.getId();
+                selectedGame = newValue.getId().toString();
                 nameField.setText(newValue.getName());
                 descriptionField.setText(newValue.getDescription());
                 amountField.setText(String.valueOf(newValue.getAmount()));
@@ -140,7 +135,7 @@ public class EmployeeScene extends CustomerScene {
         super.refreshGamePane(games);
 
         mainPane.setBottom(crudGamePane);
-        selectedGameId = null;
+        selectedGame = null;
         nameField.clear();
         descriptionField.clear();
         amountField.clear();
@@ -148,7 +143,7 @@ public class EmployeeScene extends CustomerScene {
         releasedDateField.clear();
     }
 
-    public void refreshSalesPane(List<JointOrder> orders) {
+    public void refreshSalesPane(List<JoinedOrder> orders) {
         clearPane();
         ordersTable.getItems().clear();
         ordersTable.setItems(FXCollections.observableList(orders));
@@ -158,14 +153,8 @@ public class EmployeeScene extends CustomerScene {
         mainPane.setBottom(salesReportPane);
     }
 
-    public Long getIdField() {
-        if (selectedGameId == null) {
-            gameText.setText("No game selected!");
-
-            return 0L;
-        }
-
-        return selectedGameId;
+    public String getIdField() {
+        return selectedGame;
     }
 
     public String getNameField() {
@@ -176,36 +165,27 @@ public class EmployeeScene extends CustomerScene {
         return descriptionField.getText();
     }
 
-    public Integer getAmountField() {
-        return Integer.valueOf(amountField.getText());
+    public String getAmountField() {
+        return amountField.getText();
     }
 
-    public Double getPriceField() {
-        return Double.valueOf(priceField.getText());
+    public String getPriceField() {
+        return priceField.getText();
     }
 
-    public LocalDate getReleasedDateField() {
-        String date = releasedDateField.getText();
-
-        String regexPattern = "\\d{4}-\\d{2}-\\d{2}";
-        Pattern pattern = Pattern.compile(regexPattern);
-        Matcher matcher = pattern.matcher(date);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        if (matcher.matches()) {
-            return LocalDate.parse(date, formatter);
-        } else {
-            setSalesText("Invalid date. Setting a default date!");
-            return LocalDate.now();
-        }
+    public String getReleasedDateField() {
+        return releasedDateField.getText();
     }
 
-    public void setGameText(String text) {
+    public void setGameText(String text, boolean good) {
+        gameText.setFill(good ? Color.GREEN : Color.FIREBRICK);
+
         gameText.setText(text);
     }
 
-    public void setSalesText(String text) {
+    public void setSalesText(String text, boolean good) {
+        salesText.setFill(good ? Color.GREEN : Color.FIREBRICK);
+
         salesText.setText(text);
     }
 

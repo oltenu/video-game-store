@@ -1,6 +1,6 @@
 package service.order;
 
-import model.JointOrder;
+import model.JoinedOrder;
 import model.Order;
 import model.validator.Notification;
 
@@ -21,7 +21,7 @@ public interface OrderService {
 
     Notification<Boolean> buyGame(Long userId, Long gameId, Integer amount);
 
-    List<JointOrder> findAllCustomerOrders(Long customerId);
+    List<JoinedOrder> findAllCustomerOrders(Long customerId);
 
-    List<JointOrder> findAllEmployeeSales(Long employeeId);
+    List<JoinedOrder> findAllEmployeeSales(Long employeeId);
 }

@@ -58,6 +58,31 @@ public class UserRepositoryMySQL extends AbstractRepository<User> implements Use
 
     }
 
+    public boolean addSave(User user, String salt) {
+        try {
+            PreparedStatement insertUserStatement = connection
+                    .prepareStatement("INSERT INTO user values (null, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            insertUserStatement.setString(1, user.getUsername());
+            insertUserStatement.setString(2, user.getPassword());
+            insertUserStatement.setDouble(3, user.getMoney());
+            insertUserStatement.executeUpdate();
+
+            ResultSet rs = insertUserStatement.getGeneratedKeys();
+            rs.next();
+            long userId = rs.getLong(1);
+            user.setId(userId);
+
+            addUserSalt(user.getId(), salt);
+            rightsRolesRepository.addRolesToUser(user, user.getRoles());
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
     public boolean update(User user) {
         String query = "UPDATE `user` " +
                 " SET username = ?, password = ?, money = ? " +

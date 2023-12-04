@@ -4,18 +4,14 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import model.JointOrder;
-import model.Order;
-import model.Role;
+import model.JoinedOrder;
 import model.User;
-import model.builder.UserBuilder;
 import model.validator.Notification;
 import service.game.VideoGameService;
 import service.order.OrderService;
 import service.user.AuthenticationService;
 import service.user.UserService;
 import view.AdminScene;
-import view.EmployeeScene;
 import view.Window;
 
 import java.io.FileNotFoundException;
@@ -27,20 +23,16 @@ import java.util.List;
 import static database.Constants.Roles.*;
 
 public class AdminController extends EmployeeController {
-    private final Window window;
     private final AdminScene adminScene;
-    private final VideoGameService videoGameService;
     private final OrderService orderService;
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
     public AdminController(Window window, AdminScene adminScene, VideoGameService videoGameService,
                            OrderService orderService, UserService userService, AuthenticationService authenticationService) {
-        super(window, adminScene, authenticationService, videoGameService, orderService, userService);
+        super(window, adminScene, videoGameService, orderService, userService);
 
-        this.window = window;
         this.adminScene = adminScene;
-        this.videoGameService = videoGameService;
         this.orderService = orderService;
         this.userService = userService;
         this.authenticationService = authenticationService;
@@ -83,13 +75,20 @@ public class AdminController extends EmployeeController {
         public void handle(javafx.event.ActionEvent event) {
             String username = adminScene.getUsernameField();
             String password = adminScene.getPasswordField();
+            String money = adminScene.getMoneyField();
+            String role = adminScene.getSelectedRole();
 
-            Notification<Boolean> registerNotification = authenticationService.register(username, password);
+            if (password.isEmpty()) {
+                adminScene.setUsersText("No password!", false);
+            }
+
+            Notification<Boolean> registerNotification = authenticationService.register(username, password, money,
+                    role);
 
             if (registerNotification.hasErrors()) {
-                adminScene.setUsersText(registerNotification.getFormattedErrors());
+                adminScene.setUsersText(registerNotification.getFormattedErrors(), false);
             } else {
-                adminScene.setUsersText("Added new user!");
+                adminScene.setUsersText("Added new user!", true);
             }
 
             adminScene.refreshCrudUsersPanel(userService.findAll(), Arrays.asList(ROLES));
@@ -103,20 +102,20 @@ public class AdminController extends EmployeeController {
             Long id = adminScene.getUserId();
             String username = adminScene.getUsernameField();
             String password = adminScene.getPasswordField();
-            Double money = Double.valueOf(adminScene.getMoneyField());
+            String money = adminScene.getMoneyField();
             String role = adminScene.getSelectedRole();
-            List<Role> roles = new ArrayList<>();
-            roles.add(userService.findRoleByTitle(role));
 
-            User user = new UserBuilder()
-                    .setId(id)
-                    .setUsername(username)
-                    .setPassword(password)
-                    .setMoney(money)
-                    .setRoles(roles)
-                    .build();
+            if (id == null) {
+                adminScene.setUsersText("No user selected!", false);
+            }
 
-            userService.update(user);
+            Notification<Boolean> resultNotification = userService.update(id, username, password, money, role);
+
+            if (resultNotification.hasErrors()) {
+                adminScene.setUsersText(resultNotification.getFormattedErrors(), false);
+            } else {
+                adminScene.setUsersText("User updated!", true);
+            }
 
             adminScene.refreshCrudUsersPanel(userService.findAll(), Arrays.asList(ROLES));
         }
@@ -130,7 +129,7 @@ public class AdminController extends EmployeeController {
 
             userService.deleteById(id);
 
-            adminScene.setUsersText("User deleted!");
+            adminScene.setUsersText("User deleted!", true);
             adminScene.refreshCrudUsersPanel(userService.findAll(), Arrays.asList(ROLES));
         }
     }
@@ -145,10 +144,10 @@ public class AdminController extends EmployeeController {
             String fileName = "src/main/resources/" + employee.getUsername() + "-employee-report.pdf";
             String titleUser = employee.getUsername() + " Sales\n\n";
             StringBuilder sales = new StringBuilder();
-            List<JointOrder> employeeSales = orderService.findAllEmployeeSales(employeeId);
+            List<JoinedOrder> employeeSales = orderService.findAllEmployeeSales(employeeId);
 
             int cnt = 1;
-            for (JointOrder order : employeeSales) {
+            for (JoinedOrder order : employeeSales) {
                 sales.append(cnt++).append(": ").append("Game: ")
                         .append(order.getGameName()).append(" | Customer: ").append(order.getCustomerUsername())
                         .append(" | Amount: ").append(order.getAmount()).append(" | Total price: ")
@@ -174,7 +173,11 @@ public class AdminController extends EmployeeController {
                 document.close();
             } catch (DocumentException | FileNotFoundException e) {
                 e.printStackTrace();
+
+                adminScene.setEmployeesText("Failed to generate report!", false);
             }
+
+            adminScene.setEmployeesText("Report generated!", true);
         }
     }
 
@@ -185,7 +188,7 @@ public class AdminController extends EmployeeController {
             String selectedEmployee = adminScene.getSelectedEmployee();
             Long employeeId = Long.parseLong(String.valueOf(selectedEmployee.charAt(0)));
 
-            List<JointOrder> orders = orderService.findAllEmployeeSales(employeeId);
+            List<JoinedOrder> orders = orderService.findAllEmployeeSales(employeeId);
 
             adminScene.setOrdersTable(orders);
         }

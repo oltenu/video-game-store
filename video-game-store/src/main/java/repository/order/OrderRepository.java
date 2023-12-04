@@ -1,6 +1,6 @@
 package repository.order;
 
-import model.JointOrder;
+import model.JoinedOrder;
 import model.Order;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public interface OrderRepository {
 
     void removeAll();
 
-    List<JointOrder> findAllCustomerOrders(Long customerId);
+    List<JoinedOrder> findAllCustomerOrders(Long customerId);
 
-    List<JointOrder> findAllEmployeeSales(Long employeeId);
+    List<JoinedOrder> findAllEmployeeSales(Long employeeId);
 }

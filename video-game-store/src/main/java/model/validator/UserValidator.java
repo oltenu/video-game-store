@@ -18,9 +18,11 @@ public class UserValidator {
         this.user = user;
     }
 
-    public boolean validate() {
+    public boolean validate(boolean update) {
         validateUsername();
-        validatePassword();
+        if(!update){
+            validatePassword();
+        }
 
         return errors.isEmpty();
     }

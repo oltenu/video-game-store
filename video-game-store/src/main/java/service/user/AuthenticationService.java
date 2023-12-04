@@ -8,9 +8,15 @@ public interface AuthenticationService {
 
     Notification<User> login(String username, String password);
 
-    boolean logout(User activeUser);
+    Notification<Boolean> register(String username, String password, String money, String role);
+
     String getUserSaltByUsername(String username);
+
     String generateSalt();
+
     String getUserSaltById(Long id);
+
     String hashPassword(String password);
+
+    boolean validateEmailUniqueness(String email);
 }

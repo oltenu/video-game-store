@@ -1,6 +1,6 @@
 package service.order;
 
-import model.JointOrder;
+import model.JoinedOrder;
 import model.Order;
 import model.User;
 import model.VideoGame;
@@ -119,12 +119,12 @@ public class OrderServiceImplementation implements OrderService {
     }
 
     @Override
-    public List<JointOrder> findAllCustomerOrders(Long customerId) {
+    public List<JoinedOrder> findAllCustomerOrders(Long customerId) {
         return orderRepository.findAllCustomerOrders(customerId);
     }
 
     @Override
-    public List<JointOrder> findAllEmployeeSales(Long employeeId) {
+    public List<JoinedOrder> findAllEmployeeSales(Long employeeId) {
         return orderRepository.findAllEmployeeSales(employeeId);
     }
 }

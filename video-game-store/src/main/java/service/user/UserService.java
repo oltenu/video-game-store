@@ -15,7 +15,7 @@ public interface UserService {
 
     void deleteById(Long id);
 
-    boolean update(User user);
+    Notification<Boolean> update(Long id, String username, String password, String money, String role);
 
     void removeAll();
 

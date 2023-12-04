@@ -1,6 +1,6 @@
 package repository.order;
 
-import model.JointOrder;
+import model.JoinedOrder;
 import model.Order;
 import model.builder.JointOrderBuilder;
 import repository.AbstractRepository;
@@ -21,8 +21,8 @@ public class OrderRepositoryMySQL extends AbstractRepository<Order> implements O
     }
 
     @Override
-    public List<JointOrder> findAllCustomerOrders(Long customerId) {
-        List<JointOrder> orders = new ArrayList<>();
+    public List<JoinedOrder> findAllCustomerOrders(Long customerId) {
+        List<JoinedOrder> orders = new ArrayList<>();
         String query = """
                 SELECT
                     `Order`.id as order_id,
@@ -56,8 +56,8 @@ public class OrderRepositoryMySQL extends AbstractRepository<Order> implements O
     }
 
     @Override
-    public List<JointOrder> findAllEmployeeSales(Long employeeId) {
-        List<JointOrder> orders = new ArrayList<>();
+    public List<JoinedOrder> findAllEmployeeSales(Long employeeId) {
+        List<JoinedOrder> orders = new ArrayList<>();
         String query = """
                 SELECT
                     `Order`.id as order_id,
@@ -90,11 +90,11 @@ public class OrderRepositoryMySQL extends AbstractRepository<Order> implements O
         return orders;
     }
 
-    private List<JointOrder> extractOrders(ResultSet resultSet) throws SQLException {
-        List<JointOrder> jointOrders = new ArrayList<>();
+    private List<JoinedOrder> extractOrders(ResultSet resultSet) throws SQLException {
+        List<JoinedOrder> joinedOrders = new ArrayList<>();
 
         while (resultSet.next()) {
-            JointOrder jointOrder = new JointOrderBuilder()
+            JoinedOrder joinedOrder = new JointOrderBuilder()
                     .setId(resultSet.getLong("order_id"))
                     .setGameName(resultSet.getString("game_name"))
                     .setCustomerUsername(resultSet.getString("customer_username"))
@@ -104,9 +104,9 @@ public class OrderRepositoryMySQL extends AbstractRepository<Order> implements O
                     .build();
 
 
-            jointOrders.add(jointOrder);
+            joinedOrders.add(joinedOrder);
         }
 
-        return jointOrders;
+        return joinedOrders;
     }
 }

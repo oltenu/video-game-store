@@ -30,4 +30,6 @@ public interface UserRepository {
     String getUserSalt(Long userId);
 
     Long getUserId(String username);
+
+    boolean addSave(User user, String salt);
 }

@@ -12,8 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import model.JointOrder;
-import model.Order;
+import model.JoinedOrder;
 import model.Role;
 import model.User;
 
@@ -177,11 +176,14 @@ public class AdminScene extends EmployeeScene {
         rolesChoice.setValue(rolesChoice.getItems().get(0));
     }
 
-    public void setUsersText(String text) {
+    public void setUsersText(String text, boolean good) {
+        usersText.setFill(good ? Color.GREEN : Color.FIREBRICK);
+
         usersText.setText(text);
     }
 
-    public void setEmployeesText(String text) {
+    public void setEmployeesText(String text, boolean good) {
+        employeesText.setFill(good ? Color.GREEN : Color.FIREBRICK);
         employeesText.setText(text);
     }
 
@@ -209,7 +211,7 @@ public class AdminScene extends EmployeeScene {
         return employeesChoice.getValue();
     }
 
-    public void setOrdersTable(List<JointOrder> orders) {
+    public void setOrdersTable(List<JoinedOrder> orders) {
         ordersTable.setItems(FXCollections.observableList(orders));
     }
 

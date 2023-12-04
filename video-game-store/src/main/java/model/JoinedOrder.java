@@ -1,6 +1,6 @@
 package model;
 
-public class JointOrder {
+public class JoinedOrder {
     private Long id;
     private String gameName;
     private String customerUsername;
