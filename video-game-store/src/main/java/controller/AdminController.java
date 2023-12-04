@@ -139,7 +139,17 @@ public class AdminController extends EmployeeController {
         @Override
         public void handle(javafx.event.ActionEvent event) {
             String selectedEmployee = adminScene.getSelectedEmployee();
-            Long employeeId = Long.parseLong(String.valueOf(selectedEmployee.charAt(0)));
+
+            StringBuilder result = new StringBuilder();
+            for (char c : selectedEmployee.toCharArray()) {
+                if (Character.isDigit(c)) {
+                    result.append(c);
+                } else {
+                    break;
+                }
+            }
+
+            Long employeeId = Long.parseLong(String.valueOf(result));
             User employee = userService.findById(employeeId);
             String fileName = "src/main/resources/" + employee.getUsername() + "-employee-report.pdf";
             String titleUser = employee.getUsername() + " Sales\n\n";
@@ -186,7 +196,17 @@ public class AdminController extends EmployeeController {
         @Override
         public void handle(javafx.event.ActionEvent event) {
             String selectedEmployee = adminScene.getSelectedEmployee();
-            Long employeeId = Long.parseLong(String.valueOf(selectedEmployee.charAt(0)));
+
+            StringBuilder result = new StringBuilder();
+            for (char c : selectedEmployee.toCharArray()) {
+                if (Character.isDigit(c)) {
+                    result.append(c);
+                } else {
+                    break;
+                }
+            }
+
+            Long employeeId = Long.parseLong(String.valueOf(result));
 
             List<JoinedOrder> orders = orderService.findAllEmployeeSales(employeeId);
 
