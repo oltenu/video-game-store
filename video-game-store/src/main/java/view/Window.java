@@ -44,15 +44,9 @@ public class Window {
                 primaryStage.setScene(loginScene);
                 loginScene.refresh();
             }
-            case 1 -> {
-                primaryStage.setScene(customerScene);
-            }
-            case 2 -> {
-                primaryStage.setScene(employeeScene);
-            }
-            case 3 -> {
-                primaryStage.setScene(adminScene);
-            }
+            case 1 -> primaryStage.setScene(customerScene);
+            case 2 -> primaryStage.setScene(employeeScene);
+            case 3 -> primaryStage.setScene(adminScene);
         }
     }
 

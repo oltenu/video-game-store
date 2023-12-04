@@ -1,5 +1,6 @@
 package service.order;
 
+import model.JoinedOrder;
 import model.Order;
 import model.User;
 import model.VideoGame;
@@ -14,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static database.Constants.Roles.ADMINISTRATOR;
 import static database.Constants.Roles.EMPLOYEE;
 
 public class OrderServiceImplementation implements OrderService {
@@ -70,7 +72,7 @@ public class OrderServiceImplementation implements OrderService {
         User employee = users.stream()
                 .filter(u -> u.getRoles()
                         .stream()
-                        .anyMatch(role -> EMPLOYEE.equals(role.getRole()))).findFirst().orElse(null);
+                        .anyMatch(role -> EMPLOYEE.equals(role.getRole()) || ADMINISTRATOR.equals(role.getRole()))).findFirst().orElse(null);
         buyGameNotification.setResult(Boolean.TRUE);
 
         if (user == null) {
@@ -117,12 +119,12 @@ public class OrderServiceImplementation implements OrderService {
     }
 
     @Override
-    public List<Order> findAllCustomerOrders(Long customerId) {
+    public List<JoinedOrder> findAllCustomerOrders(Long customerId) {
         return orderRepository.findAllCustomerOrders(customerId);
     }
 
     @Override
-    public List<Order> findAllEmployeeSales(Long employeeId) {
+    public List<JoinedOrder> findAllEmployeeSales(Long employeeId) {
         return orderRepository.findAllEmployeeSales(employeeId);
     }
 }

@@ -1,8 +1,6 @@
 package view;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -15,21 +13,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import model.Order;
+import model.JoinedOrder;
 import model.VideoGame;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class EmployeeScene extends CustomerScene {
-    private Menu employeeMenu;
     private MenuItem gamesItem;
     private MenuItem salesReportItem;
 
-    private TextField idField;
     private TextField nameField;
     private TextField descriptionField;
     private TextField amountField;
@@ -54,7 +46,7 @@ public class EmployeeScene extends CustomerScene {
     }
 
     public void initializeMenuEmployee() {
-        employeeMenu = new Menu("Employee");
+        Menu employeeMenu = new Menu("Employee");
         gamesItem = new MenuItem("Games...");
         salesReportItem = new MenuItem("Sales...");
 
@@ -77,10 +69,6 @@ public class EmployeeScene extends CustomerScene {
 
         buttonBox.getChildren().addAll(addGameButton, updateGameButton, deleteGameButton);
 
-        idField = new TextField();
-        idField.setMaxWidth(50);
-        Label idLabel = new Label("Id:");
-        idLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
         nameField = new TextField();
         nameField.setMaxWidth(80);
         Label nameLabel = new Label("Name");
@@ -102,7 +90,7 @@ public class EmployeeScene extends CustomerScene {
         Label releasedDateLabel = new Label("Date:");
         releasedDateLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 12));
 
-        fieldsBox.getChildren().addAll(new HBox(idLabel, idField), new HBox(nameLabel, nameField),
+        fieldsBox.getChildren().addAll(new HBox(nameLabel, nameField),
                 new HBox(descriptionLabel, descriptionField), new HBox(amountLabel, amountField),
                 new HBox(priceLabel, priceField), new HBox(releasedDateLabel, releasedDateField));
 
@@ -113,17 +101,15 @@ public class EmployeeScene extends CustomerScene {
         crudGamePane = new VBox(10);
         crudGamePane.getChildren().addAll(fieldsBox, buttonBox, gameText);
         BorderPane.setMargin(crudGamePane, new javafx.geometry.Insets(20));
-
-        gamesTable.getSelectionModel().getSelectedItems().addListener((ListChangeListener<VideoGame>) selected -> {
-            selected.next();
-            ObservableList<VideoGame> selectedGameList = (ObservableList<VideoGame>) selected.getList();
-            VideoGame selectedGame = selectedGameList.get(0);
-            idField.setText(String.valueOf(selectedGame.getId()));
-            nameField.setText(selectedGame.getName());
-            descriptionField.setText(selectedGame.getDescription());
-            amountField.setText(String.valueOf(selectedGame.getAmount()));
-            priceField.setText(String.valueOf(selectedGame.getPrice()));
-            releasedDateField.setText(String.valueOf(selectedGame.getReleasedDate()));
+        gamesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedGame = newValue.getId().toString();
+                nameField.setText(newValue.getName());
+                descriptionField.setText(newValue.getDescription());
+                amountField.setText(String.valueOf(newValue.getAmount()));
+                priceField.setText(String.valueOf(newValue.getPrice()));
+                releasedDateField.setText(String.valueOf(newValue.getReleasedDate()));
+            }
         });
     }
 
@@ -149,7 +135,7 @@ public class EmployeeScene extends CustomerScene {
         super.refreshGamePane(games);
 
         mainPane.setBottom(crudGamePane);
-        idField.clear();
+        selectedGame = null;
         nameField.clear();
         descriptionField.clear();
         amountField.clear();
@@ -157,17 +143,18 @@ public class EmployeeScene extends CustomerScene {
         releasedDateField.clear();
     }
 
-    public void refreshSalesPane(List<Order> orders) {
+    public void refreshSalesPane(List<JoinedOrder> orders) {
         clearPane();
-        customerOrdersTable.setItems(FXCollections.observableList(orders));
+        ordersTable.getItems().clear();
+        ordersTable.setItems(FXCollections.observableList(orders));
 
         mainPane.setTop(menuBar);
-        mainPane.setCenter(customerOrdersTable);
+        mainPane.setCenter(ordersTable);
         mainPane.setBottom(salesReportPane);
     }
 
-    public Long getIdField() {
-        return Long.valueOf(idField.getText());
+    public String getIdField() {
+        return selectedGame;
     }
 
     public String getNameField() {
@@ -178,36 +165,27 @@ public class EmployeeScene extends CustomerScene {
         return descriptionField.getText();
     }
 
-    public Integer getAmountField() {
-        return Integer.valueOf(amountField.getText());
+    public String getAmountField() {
+        return amountField.getText();
     }
 
-    public Double getPriceField() {
-        return Double.valueOf(priceField.getText());
+    public String getPriceField() {
+        return priceField.getText();
     }
 
-    public LocalDate getReleasedDateField() {
-        String date = releasedDateField.getText();
-
-        String regexPattern = "\\d{4}-\\d{2}-\\d{2}";
-        Pattern pattern = Pattern.compile(regexPattern);
-        Matcher matcher = pattern.matcher(date);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        if (matcher.matches()) {
-            return LocalDate.parse(date, formatter);
-        } else {
-            setSalesText("Invalid date. Setting a default date!");
-            return LocalDate.now();
-        }
+    public String getReleasedDateField() {
+        return releasedDateField.getText();
     }
 
-    public void setGameText(String text) {
+    public void setGameText(String text, boolean good) {
+        gameText.setFill(good ? Color.GREEN : Color.FIREBRICK);
+
         gameText.setText(text);
     }
 
-    public void setSalesText(String text) {
+    public void setSalesText(String text, boolean good) {
+        salesText.setFill(good ? Color.GREEN : Color.FIREBRICK);
+
         salesText.setText(text);
     }
 

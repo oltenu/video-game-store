@@ -88,30 +88,6 @@ public class RightsRolesRepositoryMySQL implements RightsRolesRepository {
         return null;
     }
 
-    public List<Right> findRightsByRole(Long roleId) {
-        PreparedStatement preparedStatement;
-        List<Right> rights = new ArrayList<>();
-        try {
-            String query = "SELECT * FROM " + ROLE_RIGHT + " WHERE role_id = ?";
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setLong(1, roleId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                Long rightId = resultSet.getLong("id");
-                String rightTitle = resultSet.getString("right");
-
-                rights.add(new Right(rightId, rightTitle));
-            }
-
-            return rights;
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-            return null;
-        }
-    }
-
     @Override
     public Right findRightByTitle(String right) {
         try {
@@ -146,19 +122,36 @@ public class RightsRolesRepositoryMySQL implements RightsRolesRepository {
     }
 
     @Override
-    public List<Long> findUsersWithRole(Long roleId){
+    public void updateRolesToUser(User user, List<Role> roles) {
+        String query = "UPDATE " + USER_ROLE + " SET role_id = ? WHERE user_id = ?";
+
+        try {
+            for (Role role : roles) {
+                PreparedStatement insertUserRoleStatement = connection
+                        .prepareStatement(query);
+                insertUserRoleStatement.setLong(1, role.getId());
+                insertUserRoleStatement.setLong(2, user.getId());
+                insertUserRoleStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Long> findUsersWithRole(Long roleId) {
         List<Long> usersId = new ArrayList<>();
         String query = "SELECT * FROM " + USER_ROLE + " WHERE role_id = ?";
 
-        try{
+        try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setLong(1, roleId);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 usersId.add(resultSet.getLong("user_id"));
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 

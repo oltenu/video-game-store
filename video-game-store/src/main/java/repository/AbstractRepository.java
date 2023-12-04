@@ -120,7 +120,9 @@ public class AbstractRepository<T> {
             questionMarks.deleteCharAt(questionMarks.length() - 1);
 
             String query = "INSERT INTO "
+                    + "`"
                     + table
+                    + "`"
                     + "("
                     + names
                     + ")"
@@ -187,7 +189,7 @@ public class AbstractRepository<T> {
                 }
 
                 if (field.isAnnotationPresent(MapToDatabase.class)) {
-                    updateQuery.append(field.getAnnotation(MapToDatabase.class)).append(" = ?,");
+                    updateQuery.append(field.getAnnotation(MapToDatabase.class).columnName()).append(" = ?,");
                 } else {
                     updateQuery.append(field.getName()).append(" = ?,");
                 }
@@ -200,7 +202,7 @@ public class AbstractRepository<T> {
                     table +
                     " SET " +
                     updateQuery +
-                    " WHERE id = ?" +
+                    " WHERE id = " +
                     id;
 
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -254,7 +256,7 @@ public class AbstractRepository<T> {
                 T instance = constructor.newInstance();
 
                 for (Field field : type.getDeclaredFields()) {
-                    if(field.isAnnotationPresent(Ignore.class)){
+                    if (field.isAnnotationPresent(Ignore.class)) {
                         continue;
                     }
                     String fieldName;

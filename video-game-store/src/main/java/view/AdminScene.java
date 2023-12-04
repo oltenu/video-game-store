@@ -1,8 +1,6 @@
 package view;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -14,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import model.Order;
+import model.JoinedOrder;
 import model.Role;
 import model.User;
 
@@ -118,40 +116,55 @@ public class AdminScene extends EmployeeScene {
         usersTable = new TableView<>();
 
         TableColumn<User, Long> idColumn = new TableColumn<>("Id");
-        idColumn.setMinWidth(130);
+        idColumn.setMinWidth(200);
+        idColumn.setMaxWidth(200);
+        idColumn.setPrefWidth(200);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         TableColumn<User, String> usernameColumn = new TableColumn<>("Email");
-        usernameColumn.setMinWidth(130);
+        usernameColumn.setMinWidth(200);
+        usernameColumn.setMaxWidth(200);
+        usernameColumn.setPrefWidth(200);
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         TableColumn<User, Double> moneyColumn = new TableColumn<>("Money");
-        moneyColumn.setMinWidth(130);
+        moneyColumn.setMinWidth(200);
+        moneyColumn.setMaxWidth(200);
+        moneyColumn.setPrefWidth(200);
         moneyColumn.setCellValueFactory(new PropertyValueFactory<>("money"));
         TableColumn<User, List<Role>> roleColumn = new TableColumn<>("Role");
-        roleColumn.setMinWidth(130);
+        roleColumn.setMinWidth(200);
+        roleColumn.setMaxWidth(200);
+        roleColumn.setPrefWidth(200);
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("roles"));
 
-        usersTable.getColumns().addAll(usernameColumn, moneyColumn, roleColumn);
+        usersTable.getColumns().addAll(idColumn, usernameColumn, moneyColumn, roleColumn);
         usersTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        usersTable.getSelectionModel().getSelectedItems().addListener((ListChangeListener<User>) selected -> {
-            selected.next();
-            ObservableList<User> selectedUserList = (ObservableList<User>) selected.getList();
-            User selectedUser = selectedUserList.get(0);
-            userId = selectedUser.getId();
-            usernameField.setText(selectedUser.getUsername());
-            moneyField.setText(String.valueOf(selectedUser.getMoney()));
+        usersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                userId = newValue.getId();
+                usernameField.setText(newValue.getUsername());
+                moneyField.setText(String.valueOf(newValue.getMoney()));
+            }
         });
     }
 
     public void refreshEmployeesReportPanel(List<String> employees) {
         clearPane();
+        employeesChoice.getItems().clear();
 
         mainPane.setTop(menuBar);
-        mainPane.setCenter(customerOrdersTable);
+        mainPane.setCenter(ordersTable);
         mainPane.setBottom(employeesReportPane);
+
+        employees.forEach(employee -> employeesChoice.getItems().add(employee));
+        employeesChoice.setValue(employeesChoice.getItems().get(0));
     }
 
     public void refreshCrudUsersPanel(List<User> users, List<String> roles) {
         clearPane();
+        usernameField.clear();
+        passwordField.clear();
+        moneyField.clear();
+        rolesChoice.getItems().clear();
 
         usersTable.setItems(FXCollections.observableList(users));
 
@@ -160,13 +173,17 @@ public class AdminScene extends EmployeeScene {
         mainPane.setBottom(crudUsersPane);
 
         roles.forEach(role -> rolesChoice.getItems().add(role));
+        rolesChoice.setValue(rolesChoice.getItems().get(0));
     }
 
-    public void setUsersText(String text) {
+    public void setUsersText(String text, boolean good) {
+        usersText.setFill(good ? Color.GREEN : Color.FIREBRICK);
+
         usersText.setText(text);
     }
 
-    public void setEmployeesText(String text) {
+    public void setEmployeesText(String text, boolean good) {
+        employeesText.setFill(good ? Color.GREEN : Color.FIREBRICK);
         employeesText.setText(text);
     }
 
@@ -185,7 +202,8 @@ public class AdminScene extends EmployeeScene {
     public String getSelectedRole() {
         return rolesChoice.getValue();
     }
-    public Long getUserId(){
+
+    public Long getUserId() {
         return userId;
     }
 
@@ -193,8 +211,8 @@ public class AdminScene extends EmployeeScene {
         return employeesChoice.getValue();
     }
 
-    public void setOrdersTable(List<Order> orders) {
-        customerOrdersTable.setItems(FXCollections.observableList(orders));
+    public void setOrdersTable(List<JoinedOrder> orders) {
+        ordersTable.setItems(FXCollections.observableList(orders));
     }
 
     public void addUsersItemListener(EventHandler<ActionEvent> usersItemListener) {

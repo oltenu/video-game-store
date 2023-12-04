@@ -13,6 +13,7 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 import static database.Constants.Roles.CUSTOMER;
 
@@ -41,11 +42,11 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
 
         UserValidator userValidator = new UserValidator(user);
 
-        boolean userValid = userValidator.validate();
+        boolean userValid = userValidator.validate(false);
         Notification<Boolean> userRegisterNotification = new Notification<>();
         userRegisterNotification.setResult(Boolean.TRUE);
 
-        if (!validateEmailUniqueness(username)) {
+        if (validateEmailUniqueness(username)) {
             userRegisterNotification.addError("Email is already taken!");
             userRegisterNotification.setResult(Boolean.FALSE);
         }
@@ -64,31 +65,89 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
     }
 
     @Override
-    public Notification<User> login(String username, String password) {
-        return userRepository.findByUsernameAndPassword(username, hashPassword(password));
+    public Notification<Boolean> register(String username, String password, String money, String role) {
+        Notification<Boolean> resultNotification = new Notification<>();
+        Role userRole = rightsRolesRepository.findRoleByTitle(role);
+        double moneyAmount = 0;
+
+        if (money.isEmpty() || !Pattern.matches("^\\d*\\.?\\d+$", money)) {
+            resultNotification.addError("Invalid money amount!");
+        } else {
+            moneyAmount = Double.parseDouble(money);
+        }
+
+        User user = new UserBuilder()
+                .setUsername(username)
+                .setPassword(password)
+                .setMoney(moneyAmount)
+                .setRoles(Collections.singletonList(userRole))
+                .build();
+
+        UserValidator userValidator = new UserValidator(user);
+
+        boolean userValid = userValidator.validate(false);
+        Notification<Boolean> userRegisterNotification = new Notification<>();
+        userRegisterNotification.setResult(Boolean.TRUE);
+
+        if (validateEmailUniqueness(username)) {
+            userRegisterNotification.addError("Email is already taken!");
+            userRegisterNotification.setResult(Boolean.FALSE);
+        }
+
+        if (!userValid || userRegisterNotification.hasErrors() || resultNotification.hasErrors()) {
+            userValidator.getErrors().forEach(userRegisterNotification::addError);
+            resultNotification.getErrors().forEach(userRegisterNotification::addError);
+
+            userRegisterNotification.setResult(Boolean.FALSE);
+        } else {
+            String salt = generateSalt();
+            user.setPassword(hashPassword(password + salt));
+
+            userRegisterNotification.setResult(userRepository.addSave(user, salt));
+        }
+
+        return userRegisterNotification;
     }
 
     @Override
-    public boolean logout(User activeUser) {
-        activeUser = null;
+    public Notification<User> login(String username, String password) {
+        if (userRepository.existsByUsername(username)) {
+            String salt = getUserSaltByUsername(username);
+            return userRepository.findByUsernameAndPassword(username, hashPassword(password + salt));
+        } else {
+            Notification<User> notification = new Notification<>();
+            notification.addError("Invalid username or password");
+            return notification;
+        }
 
-        return true;
     }
 
-    private boolean validateEmailUniqueness(String email) {
-        final boolean response = userRepository.existsByUsername(email);
+    @Override
+    public boolean validateEmailUniqueness(String email) {
 
-        return !response;
+        return userRepository.existsByUsername(email);
     }
 
-    private String generateSalt() {
+    @Override
+    public String generateSalt() {
         SecureRandom secureRandom = new SecureRandom();
         byte[] salt = new byte[SALT_LENGTH];
         secureRandom.nextBytes(salt);
         return Base64.getEncoder().encodeToString(salt);
     }
 
-    private String hashPassword(String password) {
+    @Override
+    public String getUserSaltByUsername(String username) {
+        return userRepository.getUserSalt(userRepository.getUserId(username));
+    }
+
+    @Override
+    public String getUserSaltById(Long id) {
+        return userRepository.getUserSalt(id);
+    }
+
+    @Override
+    public String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));

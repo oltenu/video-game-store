@@ -1,8 +1,6 @@
 package view;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -12,8 +10,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import model.Order;
+import model.JoinedOrder;
 import model.VideoGame;
 
 import java.time.LocalDate;
@@ -33,11 +33,11 @@ public class CustomerScene extends Scene {
     private VBox userPane;
 
     protected TableView<VideoGame> gamesTable;
-    protected TableView<Order> customerOrdersTable;
+    protected TableView<JoinedOrder> ordersTable;
 
     protected Button buyButton;
 
-    protected TextField buyGameIdTextField;
+    protected String selectedGame;
     protected TextField buyGameNameTextField;
     protected TextField buyAmountTextField;
 
@@ -83,8 +83,10 @@ public class CustomerScene extends Scene {
         userNameLabel = new Label("Name:");
         moneyLabel = new Label("Money:");
         userRoleLabel = new Label("Role:");
+        Label welcomeLabel = new Label("Welcome to our store!");
+        welcomeLabel.setFont(Font.font("Courier", FontWeight.BOLD, 20));
 
-        userPane.getChildren().addAll(new Label("Welcome to our store!"), userNameLabel,
+        userPane.getChildren().addAll(welcomeLabel, userNameLabel,
                 moneyLabel, userRoleLabel);
     }
 
@@ -97,61 +99,79 @@ public class CustomerScene extends Scene {
         gamesTable = new TableView<>();
 
         TableColumn<VideoGame, Long> idColumn = new TableColumn<>("Id");
-        idColumn.setMinWidth(50);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPrefWidth(0);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         TableColumn<VideoGame, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setMinWidth(200);
+        nameColumn.setMinWidth(195);
+        nameColumn.setMaxWidth(195);
+        nameColumn.setPrefWidth(195);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         TableColumn<VideoGame, String> descriptionColumn = new TableColumn<>("Description");
-        descriptionColumn.setMinWidth(200);
+        descriptionColumn.setMinWidth(195);
+        descriptionColumn.setMaxWidth(195);
+        descriptionColumn.setPrefWidth(195);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         TableColumn<VideoGame, LocalDate> releasedDateColumn = new TableColumn<>("Released Date");
-        releasedDateColumn.setMinWidth(200);
+        releasedDateColumn.setMinWidth(195);
+        releasedDateColumn.setMaxWidth(195);
+        releasedDateColumn.setPrefWidth(195);
         releasedDateColumn.setCellValueFactory(new PropertyValueFactory<>("releasedDate"));
         TableColumn<VideoGame, Integer> amountColumn = new TableColumn<>("Amount");
-        amountColumn.setMinWidth(50);
+        amountColumn.setMinWidth(100);
+        amountColumn.setMaxWidth(100);
+        amountColumn.setPrefWidth(100);
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
         TableColumn<VideoGame, Double> priceColumn = new TableColumn<>("Price");
-        priceColumn.setMinWidth(70);
+        priceColumn.setMinWidth(100);
+        priceColumn.setMaxWidth(100);
+        priceColumn.setPrefWidth(100);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         gamesTable.getColumns().addAll(idColumn, nameColumn, descriptionColumn,
                 releasedDateColumn, amountColumn, priceColumn);
         gamesTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        gamesTable.getSelectionModel().getSelectedItems().addListener((ListChangeListener<VideoGame>) selected -> {
-            selected.next();
-            ObservableList<VideoGame> selectedGameList = (ObservableList<VideoGame>) selected.getList();
-            VideoGame selectedGame = selectedGameList.get(0);
-            buyGameIdTextField.setText(String.valueOf(selectedGame.getId()));
-            buyGameNameTextField.setText(selectedGame.getName());
+        gamesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedGame = newValue.getId().toString();
+                buyGameNameTextField.setText(newValue.getName());
+            }
         });
     }
 
     private void initializeOrderTable() {
-        customerOrdersTable = new TableView<>();
+        ordersTable = new TableView<>();
 
-        TableColumn<Order, Long> idColumn = new TableColumn<>("Id");
-        idColumn.setMinWidth(130);
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        TableColumn<Order, Long> customerIdColumn = new TableColumn<>("Customer Id");
-        customerIdColumn.setMinWidth(130);
-        customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-        TableColumn<Order, Long> employeeIdColumn = new TableColumn<>("Employee Id");
-        employeeIdColumn.setMinWidth(130);
-        employeeIdColumn.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
-        TableColumn<Order, Long> gameIdColumn = new TableColumn<>("Game Id");
-        gameIdColumn.setMinWidth(130);
-        gameIdColumn.setCellValueFactory(new PropertyValueFactory<>("gameId"));
-        TableColumn<Order, Integer> amountColumn = new TableColumn<>("Amount");
-        amountColumn.setMinWidth(130);
+        TableColumn<JoinedOrder, String> gameColumn = new TableColumn<>("Game");
+        gameColumn.setMinWidth(195);
+        gameColumn.setMaxWidth(195);
+        gameColumn.setPrefWidth(195);
+        gameColumn.setCellValueFactory(new PropertyValueFactory<>("gameName"));
+        TableColumn<JoinedOrder, String> customerColumn = new TableColumn<>("Customer");
+        customerColumn.setMinWidth(195);
+        customerColumn.setMaxWidth(195);
+        customerColumn.setPrefWidth(195);
+        customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerUsername"));
+        TableColumn<JoinedOrder, String> employeeColumn = new TableColumn<>("Employee");
+        employeeColumn.setMinWidth(195);
+        employeeColumn.setMaxWidth(195);
+        employeeColumn.setPrefWidth(195);
+        employeeColumn.setCellValueFactory(new PropertyValueFactory<>("employeeUsername"));
+        TableColumn<JoinedOrder, Integer> amountColumn = new TableColumn<>("Amount");
+        amountColumn.setMinWidth(100);
+        amountColumn.setMaxWidth(100);
+        amountColumn.setPrefWidth(100);
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
-        TableColumn<Order, Double> totalPriceColumn = new TableColumn<>("Total Price");
-        totalPriceColumn.setMinWidth(130);
+        TableColumn<JoinedOrder, Double> totalPriceColumn = new TableColumn<>("Total Price");
+        totalPriceColumn.setMinWidth(100);
+        totalPriceColumn.setMaxWidth(100);
+        totalPriceColumn.setPrefWidth(100);
         totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
 
-        customerOrdersTable.getColumns().addAll(idColumn, customerIdColumn, employeeIdColumn,
-                gameIdColumn, amountColumn, totalPriceColumn);
-        customerOrdersTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        ordersTable.getColumns().addAll(gameColumn, customerColumn,
+                employeeColumn, amountColumn, totalPriceColumn);
+        ordersTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
     private void initializeBuyPane() {
@@ -160,17 +180,13 @@ public class CustomerScene extends Scene {
         buyPane.setPadding(new Insets(25, 25, 25, 25));
 
         HBox buyBox = new HBox(50);
-        buyGameIdTextField = new TextField();
-        buyGameIdTextField.setEditable(false);
-        buyGameIdTextField.setMaxWidth(30);
         buyGameNameTextField = new TextField();
         buyGameNameTextField.setEditable(false);
         buyAmountTextField = new TextField();
         buyAmountTextField.setMaxWidth(30);
         buyButton = new Button("Buy");
 
-        buyBox.getChildren().addAll(new HBox(new Label("Id:"), buyGameIdTextField),
-                new HBox(new Label("Game:"), buyGameNameTextField),
+        buyBox.getChildren().addAll(new HBox(new Label("Game:"), buyGameNameTextField),
                 new HBox(new Label("Amount:"), buyAmountTextField, buyButton));
 
         buyText = new Text();
@@ -189,58 +205,50 @@ public class CustomerScene extends Scene {
     public void refreshHomePane() {
         clearPane();
 
-        mainPane.setTop(menuBar);
         mainPane.setCenter(userPane);
     }
 
     public void refreshGamePane(List<VideoGame> games) {
         clearPane();
 
+        gamesTable.getItems().clear();
+        buyGameNameTextField.clear();
+        buyAmountTextField.clear();
+        selectedGame = null;
         gamesTable.setItems(FXCollections.observableList(games));
         mainPane.setTop(menuBar);
         mainPane.setCenter(gamesTable);
         mainPane.setBottom(buyPane);
     }
 
-    public void refreshOrderPane(List<Order> orders) {
+    public void refreshOrderPane(List<JoinedOrder> joinedOrders) {
         clearPane();
-        customerOrdersTable.setItems(FXCollections.observableList(orders));
+        ordersTable.getItems().clear();
+        ordersTable.setItems(FXCollections.observableList(joinedOrders));
 
         mainPane.setTop(menuBar);
-        mainPane.setCenter(customerOrdersTable);
-        buyGameIdTextField.clear();
-        buyAmountTextField.clear();
+        mainPane.setCenter(ordersTable);
     }
 
     public void clearPane() {
-        mainPane.setTop(new StackPane());
+        mainPane.setTop(menuBar);
         mainPane.setBottom(new StackPane());
         mainPane.setCenter(new StackPane());
         mainPane.setRight(new StackPane());
         mainPane.setLeft(new StackPane());
     }
 
-    public Long getSelectedGameId() {
-        if (buyGameIdTextField.getText().isEmpty()) {
-            setBuyResult("No product selected!");
-
-            return 0L;
-        }
-
-        return Long.valueOf(buyGameIdTextField.getText());
+    public String getSelectedGame() {
+        return selectedGame;
     }
 
-    public Integer getAmount() {
-        if (buyAmountTextField.getText().isEmpty()) {
-            setBuyResult("No amount selected!");
-
-            return 0;
-        }
-
-        return Integer.valueOf(buyAmountTextField.getText());
+    public String getAmount() {
+        return buyAmountTextField.getText();
     }
 
-    public void setBuyResult(String result) {
+    public void setBuyResult(String result, boolean good) {
+        buyText.setFill(good ? Color.GREEN : Color.FIREBRICK);
+
         buyText.setText(result);
     }
 

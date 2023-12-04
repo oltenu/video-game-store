@@ -3,12 +3,15 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import model.Role;
+import model.User;
 import model.validator.Notification;
 import service.game.VideoGameService;
 import service.order.OrderService;
-import service.user.AuthenticationService;
+import service.user.UserService;
 import view.CustomerScene;
 import view.Window;
+
+import java.util.regex.Pattern;
 
 import static database.Constants.Roles.ADMINISTRATOR;
 import static database.Constants.Roles.EMPLOYEE;
@@ -16,15 +19,15 @@ import static database.Constants.Roles.EMPLOYEE;
 public class CustomerController {
     private final Window window;
     private final CustomerScene customerScene;
-    private final AuthenticationService authenticationService;
     private final VideoGameService videoGameService;
     private final OrderService orderService;
+    private final UserService userService;
 
-    public CustomerController(Window window, CustomerScene customerScene, AuthenticationService authenticationService,
-                              VideoGameService videoGameService, OrderService orderService) {
+    public CustomerController(Window window, CustomerScene customerScene, VideoGameService videoGameService,
+                              OrderService orderService, UserService userService) {
         this.window = window;
+        this.userService = userService;
         this.customerScene = customerScene;
-        this.authenticationService = authenticationService;
         this.videoGameService = videoGameService;
         this.orderService = orderService;
 
@@ -36,14 +39,16 @@ public class CustomerController {
     }
 
     public void setUserData() {
+        User user = userService.findById(window.getActiveUser().getId());
+
         String role = "Customer";
-        if (window.getActiveUser().getRoles().stream().map(Role::getRole).toList().contains(ADMINISTRATOR)) {
+        if (user.getRoles().stream().map(Role::getRole).toList().contains(ADMINISTRATOR)) {
             role = "Administrator";
-        } else if (window.getActiveUser().getRoles().stream().map(Role::getRole).toList().contains(EMPLOYEE)) {
+        } else if (user.getRoles().stream().map(Role::getRole).toList().contains(EMPLOYEE)) {
             role = "Employee";
         }
 
-        customerScene.setUserData(window.getActiveUser().getUsername(), window.getActiveUser().getMoney().toString(), role);
+        customerScene.setUserData(user.getUsername(), user.getMoney().toString(), role);
     }
 
     private class HomeItemListener implements EventHandler<ActionEvent> {
@@ -59,8 +64,8 @@ public class CustomerController {
 
         @Override
         public void handle(javafx.event.ActionEvent event) {
-            authenticationService.logout(window.getActiveUser());
             window.setActiveUser(null);
+            customerScene.clearPane();
 
             window.setScene(0);
         }
@@ -78,20 +83,35 @@ public class CustomerController {
 
         @Override
         public void handle(javafx.event.ActionEvent event) {
-            Long gameId = customerScene.getSelectedGameId();
-            Integer amount = customerScene.getAmount();
+            Notification<Boolean> resultNotification = new Notification<>();
+            Notification<Boolean> dataBaseNotification = new Notification<>();
 
-            if (gameId == 0 || amount == 0) {
-                return;
+            String selectedGame = customerScene.getSelectedGame();
+            String amountString = customerScene.getAmount();
+            int amount;
+
+            if (selectedGame == null) {
+                resultNotification.addError("No game selected!");
+                resultNotification.setResult(Boolean.FALSE);
+            }
+            if (Pattern.matches("^[1-9]\\d*$", amountString)) {
+                amount = Integer.parseInt(amountString);
+
+                if (!resultNotification.hasErrors()) {
+                    Long gameId = Long.valueOf(customerScene.getSelectedGame());
+                    dataBaseNotification = orderService.buyGame(window.getActiveUser().getId(), gameId, amount);
+                }
+            } else {
+                resultNotification.addError("Invalid amount!");
+                resultNotification.setResult(Boolean.FALSE);
             }
 
-            Notification<Boolean> result = orderService.buyGame(window.getActiveUser().getId(), gameId, amount);
-
-            if (result.hasErrors()) {
-                customerScene.setBuyResult(result.getFormattedErrors());
+            if (resultNotification.hasErrors() || dataBaseNotification.hasErrors()) {
+                customerScene.setBuyResult(resultNotification.getFormattedErrors() +
+                        dataBaseNotification.getFormattedErrors(), false);
                 customerScene.refreshGamePane(videoGameService.findAll());
             } else {
-                customerScene.setBuyResult("Purchased successfully!");
+                customerScene.setBuyResult("Purchased successfully!", true);
                 customerScene.refreshGamePane(videoGameService.findAll());
             }
         }

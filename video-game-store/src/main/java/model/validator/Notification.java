@@ -33,4 +33,8 @@ public class Notification<T> {
     public String getFormattedErrors() {
         return String.join("\n", errors);
     }
+
+    public List<String> getErrors() {
+        return errors;
+    }
 }

@@ -28,12 +28,12 @@ public class VideoGameServiceImplementation implements VideoGameService {
     @Override
     public Notification<Boolean> save(VideoGame videoGame) {
         Notification<Boolean> saveNotification = new Notification<>();
-        if (videoGame.getName().isEmpty()){
+        if (videoGame.getName().isEmpty()) {
             saveNotification.setResult(Boolean.FALSE);
             saveNotification.addError("A game needs a name!");
         }
 
-        if(videoGame.getDescription().isEmpty()){
+        if (videoGame.getDescription().isEmpty()) {
             saveNotification.setResult(Boolean.FALSE);
             saveNotification.addError("A game needs a description!");
         }
@@ -62,8 +62,10 @@ public class VideoGameServiceImplementation implements VideoGameService {
         Long id = videoGame.getId();
         Optional<VideoGame> game = videoGameRepository.findById(id);
 
+
         if (game.isPresent()) {
             resultNotification.setResult(Boolean.TRUE);
+            videoGameRepository.update(videoGame);
         } else {
             resultNotification.setResult(Boolean.FALSE);
             resultNotification.addError("Select an existing game to edit!");

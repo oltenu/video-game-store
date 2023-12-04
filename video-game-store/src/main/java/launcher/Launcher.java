@@ -9,7 +9,7 @@ public class Launcher extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        ComponentFactory componentFactory = ComponentFactory.getInstance(false, primaryStage);
+    public void start(Stage primaryStage) {
+        ComponentFactory.getInstance(false, primaryStage);
     }
 }
